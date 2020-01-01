@@ -1,7 +1,6 @@
 package greet
 
 import (
-	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -44,31 +43,34 @@ func Test_user_greet(t *testing.T) {
 	}
 }
 
-func Test_user_getM(t *testing.T) {
-	type fields struct {
-		name string
-		m    *sync.Map
-	}
+func Test_cal(t *testing.T) {
 	type args struct {
-		key string
+		n int
 	}
 	tests := []struct {
 		name      string
-		fields    fields
 		args      args
 		want      string
 		assertion assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:      "",
+			args:      args{n: 0},
+			want:      "0",
+			assertion: assert.NoError,
+		},
+		{
+			name:      "",
+			args:      args{n: 101},
+			want:      "",
+			assertion: assert.Error,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u := &user{
-				name: tt.fields.name,
-				m:    tt.fields.m,
-			}
-			got, err := u.getM(tt.args.key)
+			got, err := cal(tt.args.n)
 			tt.assertion(t, err)
+			// 自動生成されるのはEqual関数．
 			assert.Equal(t, tt.want, got)
 		})
 	}

@@ -2,12 +2,10 @@ package greet
 
 import (
 	"fmt"
-	"sync"
 )
 
 type user struct {
 	name string
-	m    *sync.Map
 }
 
 func greet() string {
@@ -18,14 +16,11 @@ func (u *user) greet() string {
 	return fmt.Sprintf("I am %s", u.name)
 }
 
-func (u *user) getM(key string) (string, error) {
-	raw, ok := u.m.Load(key)
-	if !ok {
-		return "", fmt.Errorf("")
+const max = 100
+
+func cal(n int) (string, error) {
+	if n > max {
+		return "", fmt.Errorf("over the max limit(%d); given: %d", max, n)
 	}
-	v, ok := raw.(string)
-	if !ok {
-		return "", fmt.Errorf("")
-	}
-	return v, nil
+	return fmt.Sprintf("%d", n), nil
 }
