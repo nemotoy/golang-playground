@@ -1,6 +1,10 @@
 package greet
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Test_greet(t *testing.T) {
 	tests := []struct {
@@ -34,9 +38,7 @@ func Test_user_greet(t *testing.T) {
 			u := &user{
 				name: tt.fields.name,
 			}
-			if got := u.greet(); got != tt.want {
-				t.Errorf("user.greet() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, u.greet())
 		})
 	}
 }
