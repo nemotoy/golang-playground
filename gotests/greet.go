@@ -24,3 +24,10 @@ func cal(n int) (string, error) {
 	}
 	return fmt.Sprintf("%d", n), nil
 }
+
+func cal2(n int) (string, error) {
+	if n > max {
+		return "", fmt.Errorf("over the max limit(%d); given: %d", max, n)
+	}
+	return fmt.Sprintf("%d", n), nil
+}

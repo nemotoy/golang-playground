@@ -70,8 +70,45 @@ func Test_cal(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := cal(tt.args.n)
 			tt.assertion(t, err)
-			// 自動生成されるのはEqual関数．
+			// 自動生成されるのはEqual関数
 			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func Test_cal2(t *testing.T) {
+	type args struct {
+		n int
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			name:    "",
+			args:    args{n: 0},
+			want:    "0",
+			wantErr: false,
+		},
+		{
+			name:    "",
+			args:    args{n: 101},
+			want:    "",
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := cal2(tt.args.n)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("cal2() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("cal2() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
