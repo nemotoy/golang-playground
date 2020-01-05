@@ -1,0 +1,21 @@
+version: 2
+
+jobs:
+  test:
+    docker:
+      - image: golang:1.13
+    environment:
+      GO111MODULE: "on"
+      GOSUMDB: "off"
+    steps:
+      - checkout
+      - run:
+          name: Lint by golangci-lint
+          command: |
+            curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.22.2
+            golangci-lint run -v ./...
+      - run:
+          name: test
+          command: |
+            go mod vendor
+            go test -v ./...

@@ -16,7 +16,10 @@ func (u *user) greet() string {
 	return fmt.Sprintf("I am %s", u.name)
 }
 
-const max = 100
+const (
+	max = 100
+	min = 1
+)
 
 func cal(n int) (string, error) {
 	if n > max {
