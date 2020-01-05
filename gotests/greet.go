@@ -18,7 +18,6 @@ func (u *user) greet() string {
 
 const (
 	max = 100
-	min = 1
 )
 
 func cal(n int) (string, error) {
