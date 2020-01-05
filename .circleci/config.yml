@@ -1,4 +1,25 @@
-version: 2
+version: 2.1
+
+commands:
+  lint:
+    parameters:
+      GOLANGCI_LINT_VERSION:
+        type: string
+        default: 1.21.0
+    steps:
+      - run:
+          name: Lint by golangci-lint
+          command: |
+            curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $(go env GOPATH)/bin v<< parameters.GOLANGCI_LINT_VERSION >>
+            golangci-lint run -v ./...
+  test:
+    steps:
+      - run:
+          name: test
+          command: |
+            go mod vendor
+            go test -v ./...
+
 jobs:
   test:
     docker:
@@ -8,19 +29,10 @@ jobs:
       GOSUMDB: "off"
     steps:
       - checkout
-      - run:
-          name: Lint by golangci-lint
-          command: |
-            curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.22.2
-            golangci-lint run -v ./...
-      - run:
-          name: test
-          command: |
-            go mod vendor
-            go test -v ./...
+      - lint
+      - test
 
 workflows:
-    version: 2
     test:
       jobs:
         - test
