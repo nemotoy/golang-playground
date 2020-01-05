@@ -1,5 +1,4 @@
 version: 2
-
 jobs:
   test:
     docker:
@@ -19,3 +18,9 @@ jobs:
           command: |
             go mod vendor
             go test -v ./...
+
+workflows:
+    version: 2
+    test:
+      jobs:
+        - test
