@@ -1,4 +1,4 @@
-module github.com/nemotoy/golang-playground/gotests
+module github.com/nemotoy/golang-playground
 
 go 1.13
 
