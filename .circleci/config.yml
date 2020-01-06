@@ -29,8 +29,15 @@ jobs:
       GOSUMDB: "off"
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-golang-playground-{{ checksum "go.sum" }}
       - lint
       - test
+      - save_cache:
+          paths:
+            - "/go/pkg/mod"
+          key: v1-golang-playground-{{ checksum "go.sum" }}
 
 workflows:
     test:
