@@ -1,6 +1,11 @@
 version: 2.1
 
 commands:
+  restore-cache-dependency:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-golang-playground-{{ checksum "go.sum" }}
   lint:
     parameters:
       GOLANGCI_LINT_VERSION:
@@ -19,6 +24,12 @@ commands:
           command: |
             go mod vendor
             go test -v ./...
+  save-cache-dependency:
+    steps:
+      - save_cache:
+          paths:
+            - "/go/pkg/mod"
+          key: v1-golang-playground-{{ checksum "go.sum" }}
 
 jobs:
   test:
@@ -29,15 +40,10 @@ jobs:
       GOSUMDB: "off"
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1-golang-playground-{{ checksum "go.sum" }}
+      - restore-cache-dependency
       - lint
       - test
-      - save_cache:
-          paths:
-            - "/go/pkg/mod"
-          key: v1-golang-playground-{{ checksum "go.sum" }}
+      - save-cache-dependency
 
 workflows:
     test:
