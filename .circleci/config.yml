@@ -13,17 +13,17 @@ commands:
         default: 1.21.0
     steps:
       - run:
-          name: Lint by golangci-lint
+          name: lint
           command: |
             curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $(go env GOPATH)/bin v<< parameters.GOLANGCI_LINT_VERSION >>
-            golangci-lint run -v ./...
+            make lint
   test:
     steps:
       - run:
           name: test
           command: |
             go mod vendor
-            go test -v ./...
+            make test
   save-cache-dependency:
     steps:
       - save_cache:
