@@ -31,11 +31,12 @@ func doMain() {
 		exitCode = 2
 		return
 	}
-	repos, _, err := client.Repositories.List(context.Background(), *userName, opt)
+	repos, resp, err := client.Repositories.List(context.Background(), *userName, opt)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to get list of repositories: %#v\n", err)
 		exitCode = 2
 		return
 	}
-	fmt.Println(repos)
+	defer resp.Body.Close()
+	fmt.Printf("First repo: %v\n, Rate: %s\n", repos[0], resp.Rate.String())
 }
