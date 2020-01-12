@@ -32,7 +32,7 @@ func doMain() {
 	case repoLists:
 		opt := &github.RepositoryListOptions{Type: "public"}
 		if *userName == "" {
-			fmt.Fprintf(os.Stderr, "the given user name is empty\n", *userName)
+			fmt.Fprintf(os.Stderr, "the given user name is empty\n")
 			exitCode = 2
 			return
 		}
