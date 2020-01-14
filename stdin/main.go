@@ -18,6 +18,6 @@ func main() {
 	}
 
 	if scanner.Err() != nil {
-		// handle error.
+		fmt.Fprintf(os.Stderr, "%s", scanner.Err().Error())
 	}
 }
