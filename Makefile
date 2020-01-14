@@ -7,6 +7,10 @@ all: lint test
 test:
 	$(GOTEST) -v ./...
 
+test.race:
+
+	$(GOTEST) -v -race ./...
+
 lint:
 	$(GOLINT) run -v ./...
 
