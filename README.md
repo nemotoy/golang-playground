@@ -1,6 +1,7 @@
 # golang-playground
 
 [![CircleCI](https://circleci.com/gh/nemotoy/golang-playground.svg?style=svg)](https://circleci.com/gh/nemotoy/golang-playground)
+[![codecov](https://codecov.io/gh/nemotoy/golang-playground/branch/master/graph/badge.svg)](https://codecov.io/gh/nemotoy/golang-playground)
 
 ## CircleCI on local
 

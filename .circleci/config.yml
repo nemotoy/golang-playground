@@ -23,7 +23,8 @@ commands:
           name: test
           command: |
             go mod vendor
-            make test
+            make ci.test
+            bash <(curl -s https://codecov.io/bash)
   save-cache-dependency:
     steps:
       - save_cache:
