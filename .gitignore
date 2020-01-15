@@ -10,6 +10,7 @@
 
 # Output of the go coverage tool
 *.out
+coverage.txt
 
 # Configuration file of CI for debugging on locally
 ci_local.yml
