@@ -30,6 +30,10 @@ func main() {
 		p.i = append(p.i, i)
 		p.Unlock()
 	}
+	p.Lock()
 	fmt.Printf("#I: %v\n", p.i)
+	p.Unlock()
+	p.Lock()
 	fmt.Printf("#S: %v\n", p.s)
+	p.Unlock()
 }
