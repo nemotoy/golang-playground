@@ -37,10 +37,14 @@ func Test_Retryable(t *testing.T) {
 	defer ts.Close()
 
 	c := ts.Client()
+	req, err := http.NewRequest("GET", ts.URL, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 	var r *http.Response
 	ctx := context.Background()
-	err := backoff.Retry(func() (err error) {
-		r, err = c.Get(ts.URL)
+	err = backoff.Retry(func() (err error) {
+		r, err = c.Do(req)
 		if err == nil && r.StatusCode == http.StatusOK {
 			return nil
 		}
