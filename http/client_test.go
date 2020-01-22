@@ -1,4 +1,4 @@
-package retry
+package client
 
 import (
 	"encoding/json"
@@ -11,7 +11,6 @@ import (
 
 	"fmt"
 
-	"github.com/cenkalti/backoff"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -32,30 +31,24 @@ var (
 	}
 )
 
-func Test_Retryable(t *testing.T) {
+func Test_ShouldRetryRequest(t *testing.T) {
 	ts := httptest.NewServer(handler)
 	defer ts.Close()
 
-	c := ts.Client()
+	tsc := ts.Client()
+	c := New(tsc)
 	req, err := http.NewRequest("GET", ts.URL, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	var r *http.Response
 	ctx := context.Background()
-	err = backoff.Retry(func() (err error) {
-		r, err = c.Do(req)
-		if err == nil && r.StatusCode == http.StatusOK {
-			return nil
-		}
-		r.Body.Close()
-		return err
-	}, backoff.WithContext(backoff.NewExponentialBackOff(), ctx))
+
+	resp, err := c.ShouldRetryRequest(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
 	var res response
-	if err := json.NewDecoder(r.Body).Decode(&res); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
 		t.Fatal(err)
 	}
 	got := res
