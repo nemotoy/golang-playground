@@ -16,6 +16,7 @@ type client struct {
 	c *http.Client
 }
 
+// TODO: gives backoff configurations to the argument
 func New(c *http.Client) Client {
 	return &client{c}
 }
@@ -24,6 +25,7 @@ func (c *client) ShouldRetryRequest(ctx context.Context, req *http.Request) (*ht
 	var r *http.Response
 	err := backoff.Retry(func() (err error) {
 		r, err = c.c.Do(req)
+		// TODO: implements error handling in detail
 		if err == nil && r.StatusCode == http.StatusOK {
 			return nil
 		}
