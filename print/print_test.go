@@ -40,3 +40,41 @@ func Test_print(t *testing.T) {
 		}
 	})
 }
+
+/*
+	$ go test -count 3 -benchmem -bench .
+	goos: darwin
+	goarch: amd64
+	pkg: github.com/nemotoy/golang-playground/print
+	Benchmark_String-4       2664465               448 ns/op              96 B/op          5 allocs/op
+	Benchmark_String-4       2392327               558 ns/op              96 B/op          5 allocs/op
+	Benchmark_String-4       2574836               465 ns/op              96 B/op          5 allocs/op
+	Benchmark_Sdump-4         721947              1397 ns/op             408 B/op         12 allocs/op
+	Benchmark_Sdump-4         846585              1372 ns/op             408 B/op         12 allocs/op
+	Benchmark_Sdump-4         919640              1377 ns/op             408 B/op         12 allocs/op
+	PASS
+	ok      github.com/nemotoy/golang-playground/print      11.500s
+*/
+func Benchmark_String(b *testing.B) {
+	o := o{
+		id:   100,
+		name: "A",
+		body: []byte("{t: ttt}"),
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = o.String()
+	}
+}
+
+func Benchmark_Sdump(b *testing.B) {
+	o := o{
+		id:   100,
+		name: "A",
+		body: []byte("{t: ttt}"),
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = spew.Sdump(o)
+	}
+}
