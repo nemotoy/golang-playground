@@ -16,7 +16,7 @@ type o struct {
 }
 
 func (o o) String() string {
-	return fmt.Sprintf("{id: %d, name: %s, body: %s}", o.id, o.name, string(o.body))
+	return fmt.Sprintf("{id: %d, name: %s, body: %s}", o.id, o.name, o.body)
 }
 
 func Test_print(t *testing.T) {
@@ -34,7 +34,7 @@ func Test_print(t *testing.T) {
 	})
 	t.Run("Use davecgh/go-spew/spew", func(t *testing.T) {
 		got := spew.Sdump(o)
-		// Note: spew prints the struct name (e.g. (print.<obuject name>))
+		// Note: spew prints the struct name (e.g. (print.<object name>))
 		if strings.Contains(want, got) {
 			t.Errorf("got = %s, but want = %s", got, want)
 		}
