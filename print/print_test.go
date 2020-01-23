@@ -3,6 +3,10 @@ package print
 import (
 	"fmt"
 	"testing"
+
+	"strings"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 type o struct {
@@ -22,8 +26,17 @@ func Test_print(t *testing.T) {
 		name: "A",
 		body: []byte("{t: ttt}"),
 	}
-	got := o.String()
-	if got != want {
-		t.Fail()
-	}
+	t.Run("Use String method", func(t *testing.T) {
+		got := o.String()
+		if got != want {
+			t.Errorf("got = %s, but want = %s", got, want)
+		}
+	})
+	t.Run("Use davecgh/go-spew/spew", func(t *testing.T) {
+		got := spew.Sdump(o)
+		// Note: spew prints the struct name (e.g. (print.<obuject name>))
+		if strings.Contains(want, got) {
+			t.Errorf("got = %s, but want = %s", got, want)
+		}
+	})
 }
