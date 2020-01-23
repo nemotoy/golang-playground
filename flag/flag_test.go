@@ -19,14 +19,27 @@ func parse(args []string) (opt, error) {
 }
 
 func Test_parse(t *testing.T) {
-	in := []string{"-n", "nameA"}
-	want := opt{name: "nameA"}
-	got, err := parse(in)
-	if err != nil {
-		t.Fatal(err)
+	tests := []struct {
+		name string
+		in   []string
+		want opt
+	}{
+		{
+			name: "",
+			in:   []string{"-n", "nameA"},
+			want: opt{name: "nameA"},
+		},
 	}
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got = %+v, but want = %+v", got, want)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := parse(tt.in)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got = %+v, but want = %+v", got, tt.want)
 
+			}
+		})
 	}
 }
