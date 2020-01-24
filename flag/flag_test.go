@@ -5,16 +5,23 @@ import (
 	"os"
 	"reflect"
 	"testing"
+	"time"
 )
 
 type opt struct {
 	name string
+	age  int
+	is   bool
+	dur  time.Duration
 }
 
 func parse(args []string) (opt, error) {
 	var o = opt{}
 	f := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	f.StringVar(&o.name, "n", "", "name")
+	f.IntVar(&o.age, "a", 0, "age")
+	f.BoolVar(&o.is, "b", false, "enable xxx")
+	f.DurationVar(&o.dur, "d", 1*time.Second, "duration")
 	return o, f.Parse(args)
 }
 
@@ -26,8 +33,8 @@ func Test_parse(t *testing.T) {
 	}{
 		{
 			name: "",
-			in:   []string{"-n", "nameA"},
-			want: opt{name: "nameA"},
+			in:   []string{"-n", "nameA", "-a", "20", "-b", "true", "-d", "1s"},
+			want: opt{name: "nameA", age: 20, is: true, dur: 1 * time.Second},
 		},
 	}
 	for _, tt := range tests {
@@ -38,7 +45,6 @@ func Test_parse(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("got = %+v, but want = %+v", got, tt.want)
-
 			}
 		})
 	}
