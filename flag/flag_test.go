@@ -13,16 +13,12 @@ type opt struct {
 	b bool
 }
 
-func parse(args []string) (*opt, error) {
-	var o = &opt{}
+func (o *opt) parse(args []string) error {
 	f := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 	f.StringVar(&o.s, "n", "", "string flag")
 	f.IntVar(&o.i, "a", 0, "int flag")
 	f.BoolVar(&o.b, "b", false, "bool flag")
-	if err := f.Parse(args); err != nil {
-		return nil, err
-	}
-	return o, nil
+	return f.Parse(args)
 }
 
 func Test_parse(t *testing.T) {
@@ -47,12 +43,13 @@ func Test_parse(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parse(tt.in)
+			var o = &opt{}
+			err := o.parse(tt.in)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("parse() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("parse() got = %+v, but want = %+v", got, tt.want)
+			if !reflect.DeepEqual(o, tt.want) {
+				t.Errorf("parse() got = %+v, but want = %+v", o, tt.want)
 			}
 		})
 	}
