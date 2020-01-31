@@ -1,6 +1,9 @@
 GOCMD=go
 GOTEST=$(GOCMD) test
 GOLINT=golangci-lint
+CI=circleci
+CICONF=.circleci/config.yml
+CILOCCONF=ci_local.yml
 
 all: lint test
 
@@ -18,8 +21,8 @@ lint:
 
 # For local
 ci.l.check:
-	circleci config validate .circleci/config.yml
+	${CI} config validate ${CICONF}
 
 ci.l.test:
-	circleci config process .circleci/config.yml > ci_local.yml
-	circleci build --job test -c ci_local.yml
+	${CI} config process ${CICONF} > ${CILOCCONF}
+	${CI} build --job test -c ${CILOCCONF}
