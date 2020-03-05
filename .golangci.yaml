@@ -21,3 +21,4 @@ linters:
     - gosimple
     - structcheck
     - varcheck
+    - maligned
