@@ -80,7 +80,7 @@ func (b *bucket) pourTokens(interval time.Duration, tokenNum int) {
 			}
 			b.tokens = append(b.tokens, tokenValue)
 		}
-		log.Println("current tokens: ", len(b.tokens))
+		log.Println("current number of tokens: ", len(b.tokens))
 		b.mu.Unlock()
 	}
 }
