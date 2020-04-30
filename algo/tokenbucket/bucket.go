@@ -17,8 +17,9 @@ type bucket struct {
 	size   int
 }
 
-// learn the token bucket
-// https://ja.wikipedia.org/wiki/%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3%E3%83%90%E3%82%B1%E3%83%83%E3%83%88
+// learn the Token bucket.
+// https://en.wikipedia.org/wiki/Token_bucket
+// This implementation does not calculate a request's byte size, so the ratio of request and token is one to one.
 func main() {
 	// setup a bucket
 	b := &bucket{
@@ -40,7 +41,7 @@ func main() {
 		// If succeed to get it, delete it and pass the next step
 		log.Println("access the bucket to get a token")
 		if len(b.tokens) == 0 {
-			log.Println("so a token doesn't exist in the bucket, sleep a few miliseconds")
+			log.Println("so token doesn't exist in the bucket, sleep a few miliseconds")
 			time.Sleep(500 * time.Millisecond)
 			b.mu.Unlock()
 			continue
