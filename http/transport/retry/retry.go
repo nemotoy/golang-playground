@@ -24,6 +24,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	// copy the request body because of rewind it
 	var b []byte
 	if req.Body != nil {
+		// todo: improve how to read a request body
 		body, err := ioutil.ReadAll(req.Body)
 		if err != nil {
 			return nil, err
@@ -33,7 +34,8 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	for {
 		counter++
 		res, err := t.transport().RoundTrip(req)
-		if err != nil || (res != nil && res.StatusCode >= 500) {
+		// todo: abstract
+		if err != nil || (res != nil && shouldRetry(res.StatusCode)) {
 			if counter == t.MaxRetries {
 				return nil, fmt.Errorf("achieved given max retries, then failed to request: error = %v, stauts code = %d", err, res.StatusCode)
 			}
@@ -46,4 +48,13 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		}
 		return res, nil
 	}
+}
+
+var retryStatuses = map[int]struct{}{
+	http.StatusInternalServerError: struct{}{},
+}
+
+func shouldRetry(status int) bool {
+	_, exist := retryStatuses[status]
+	return exist
 }
