@@ -29,27 +29,31 @@ func main() {
 		log.Fatal(err)
 	}
 	// start adding tokens
-	go b.pourTokens(1*time.Minute, 10)
+	go b.pourTokens(1*time.Second, 10)
 
 	// sample to access the bucket
 	t := time.NewTicker(100 * time.Millisecond)
 	defer t.Stop()
+	// nolint:gosimple
 	for {
-		<-t.C
-		log.Println("elapsed a given interval")
-		b.mu.Lock()
-		// If succeed to get it, delete it and pass the next step
-		log.Println("access the bucket to get a token")
-		if len(b.tokens) == 0 {
-			log.Println("so token doesn't exist in the bucket, sleep a few miliseconds")
-			time.Sleep(500 * time.Millisecond)
+		select {
+		case <-t.C:
+			log.Println("elapsed a given interval")
+			b.mu.Lock()
+			// If succeed to get it, delete it and pass the next step
+			log.Println("access the bucket to get a token")
+			if len(b.tokens) == 0 {
+				log.Println("so token doesn't exist in the bucket, sleep a few miliseconds")
+				time.Sleep(500 * time.Millisecond)
+				b.mu.Unlock()
+				continue
+			}
+			// todo: measures a request size, get tokens based on it
+			b.tokens = append(b.tokens[:0], b.tokens[1:]...)
+			log.Println("tokens: ", len(b.tokens))
 			b.mu.Unlock()
-			continue
+			log.Println("do something")
 		}
-		b.tokens = append(b.tokens[:0], b.tokens[1:]...)
-		log.Println("tokens: ", len(b.tokens))
-		b.mu.Unlock()
-		log.Println("do something")
 	}
 }
 
@@ -70,18 +74,21 @@ func (b *bucket) pourTokens(interval time.Duration, tokenNum int) {
 	}
 	t := time.NewTicker(interval)
 	defer t.Stop()
+	// nolint:gosimple
 	for {
-		<-t.C
-		b.mu.Lock()
-		log.Println("pour tokens")
-		for i := 1; i <= tokenNum; i++ {
-			if len(b.tokens) == b.size {
-				log.Println("so the bucket's capacity is filled, stop pouring tokens")
-				break
+		select {
+		case <-t.C:
+			b.mu.Lock()
+			log.Println("*************pour tokens*************")
+			for i := 1; i <= tokenNum; i++ {
+				if len(b.tokens) == b.size {
+					log.Println("so the bucket's capacity is filled, stop pouring tokens")
+					break
+				}
+				b.tokens = append(b.tokens, tokenValue)
 			}
-			b.tokens = append(b.tokens, tokenValue)
+			log.Println("current number of tokens: ", len(b.tokens))
+			b.mu.Unlock()
 		}
-		log.Println("current number of tokens: ", len(b.tokens))
-		b.mu.Unlock()
 	}
 }
