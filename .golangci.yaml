@@ -23,7 +23,7 @@ linters:
     - staticcheck
     - prealloc
     - ineffassign
-    - unused
+    # - unused
     - gocyclo
     - gosimple
     - structcheck
