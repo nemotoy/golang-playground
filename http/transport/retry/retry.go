@@ -20,9 +20,11 @@ type Transport struct {
 }
 
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
-	var counter int = -1
-	// copy the request body because of rewind it
-	var b []byte
+	var (
+		counter int = -1
+		// copy the request body because of rewind it
+		b []byte
+	)
 	if req.Body != nil {
 		// todo: improve how to read a request body
 		body, err := ioutil.ReadAll(req.Body)

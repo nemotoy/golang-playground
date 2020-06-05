@@ -7,6 +7,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
+
+	"golang.org/x/net/context"
 )
 
 func Test_Roundtrip(t *testing.T) {
@@ -77,6 +80,9 @@ func Test_RoundtripWithPOST(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	ctx, cf := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cf()
+	_ = req.WithContext(ctx)
 	resp, err := c.Do(req)
 	if err != nil {
 		t.Fatal(err)
