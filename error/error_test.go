@@ -1,6 +1,7 @@
 package error
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 
@@ -30,4 +31,24 @@ func Test_mltierr(t *testing.T) {
 
 	ee := multierr.Errors(ce)
 	t.Log(ee)
+}
+
+func Benchmark_IsExErr(b *testing.B) {
+	err := &ExError{"one", errors.New("one")}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if ok := IsExErr(err); ok {
+			b.Log(ok)
+		}
+	}
+}
+
+func Benchmark_ClassifyErr(b *testing.B) {
+	err := &ExError{"one", errors.New("one")}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if err := ClassifyErr(err); err != nil {
+			b.Log(err)
+		}
+	}
 }
