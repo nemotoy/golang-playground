@@ -15,7 +15,7 @@ func Test_sampleRoundtrip(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	c := &http.Client{Transport: &LogTransport{}}
+	c := &http.Client{Transport: &LogTransport{count: 100}}
 	resp, err := c.Get(ts.URL)
 	if err != nil {
 		t.Fatal(err)
