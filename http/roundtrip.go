@@ -26,6 +26,10 @@ func (t *LogTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 /*
 	## RoundTripperの実装
 
+	RoundTrip()が呼び出されるのは以下
+	c.Do(req *Request) (*Response, error) -> c.send(req *Request, deadline time.Time)
+	-> send(ireq *Request, rt RoundTripper, deadline time.Time) (resp *Response, didTimeout func() bool, err error)
+
 	* interface
 	RoundTrip(*Request) (*Response, error)のシグネチャを満たせば実装できる。
 	https://github.com/golang/go/blob/release-branch.go1.14/src/net/http/client.go#L115
