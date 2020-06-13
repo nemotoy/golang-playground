@@ -6,6 +6,7 @@ import (
 	"os"
 	"sort"
 	"sync"
+	"time"
 
 	"golang.org/x/time/rate"
 )
@@ -66,6 +67,10 @@ func (a *APIConnection) ResolveAddress(ctx context.Context) error {
 		return err
 	}
 	return nil
+}
+
+func Per(everyCount int, duration time.Duration) rate.Limit {
+	return rate.Every(duration / time.Duration(everyCount))
 }
 
 type RateLimiter interface {
