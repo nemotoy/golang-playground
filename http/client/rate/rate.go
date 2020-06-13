@@ -45,27 +45,36 @@ func main() {
 }
 
 type APIConnection struct {
-	rateLimiter RateLimiter
+	networkLimit,
+	diskLimit,
+	apiLimit RateLimiter
 }
 
 func Open() *APIConnection {
-	secondLimit := rate.NewLimiter(Per(2, time.Second), 1)
-	minuteLimit := rate.NewLimiter(Per(10, time.Minute), 10)
 	return &APIConnection{
 		// limit is speed to refill tokens, b is a depth of a bucket
-		rateLimiter: MultiLimiter(secondLimit, minuteLimit),
+		apiLimit: MultiLimiter(
+			rate.NewLimiter(Per(2, time.Second), 1),
+			rate.NewLimiter(Per(10, time.Minute), 10),
+		),
+		diskLimit: MultiLimiter(
+			rate.NewLimiter(rate.Limit(1), 1),
+		),
+		networkLimit: MultiLimiter(
+			rate.NewLimiter(Per(3, time.Second), 3),
+		),
 	}
 }
 
 func (a *APIConnection) ReadFile(ctx context.Context) error {
-	if err := a.rateLimiter.Wait(ctx); err != nil {
+	if err := MultiLimiter(a.apiLimit, a.diskLimit).Wait(ctx); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (a *APIConnection) ResolveAddress(ctx context.Context) error {
-	if err := a.rateLimiter.Wait(ctx); err != nil {
+	if err := MultiLimiter(a.apiLimit, a.networkLimit).Wait(ctx); err != nil {
 		return err
 	}
 	return nil
