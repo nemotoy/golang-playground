@@ -45,13 +45,15 @@ func main() {
 }
 
 type APIConnection struct {
-	rateLimiter *rate.Limiter
+	rateLimiter RateLimiter
 }
 
 func Open() *APIConnection {
+	secondLimit := rate.NewLimiter(Per(2, time.Second), 1)
+	minuteLimit := rate.NewLimiter(Per(10, time.Minute), 10)
 	return &APIConnection{
 		// limit is speed to refill tokens, b is a depth of a bucket
-		rateLimiter: rate.NewLimiter(rate.Limit(1), 10),
+		rateLimiter: MultiLimiter(secondLimit, minuteLimit),
 	}
 }
 
@@ -82,7 +84,7 @@ type multiLimiter struct {
 	limiters []RateLimiter
 }
 
-func MultiLimiter(limiters ...RateLimiter) *multiLimiter {
+func MultiLimiter(limiters ...RateLimiter) RateLimiter {
 	byLimit := func(i, j int) bool {
 		return limiters[i].Limit() < limiters[j].Limit()
 	}
@@ -90,7 +92,7 @@ func MultiLimiter(limiters ...RateLimiter) *multiLimiter {
 	return &multiLimiter{limiters: limiters}
 }
 
-func (m *multiLimiter) Wait(ctx context.Context) error {
+func (l *multiLimiter) Wait(ctx context.Context) error {
 	for _, l := range l.limiters {
 		if err := l.Wait(ctx); err != nil {
 			return err
@@ -99,6 +101,6 @@ func (m *multiLimiter) Wait(ctx context.Context) error {
 	return nil
 }
 
-func (m *multiLimiter) Limit() rate.Limit {
+func (l *multiLimiter) Limit() rate.Limit {
 	return l.limiters[0].Limit()
 }
