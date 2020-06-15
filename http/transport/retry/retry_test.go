@@ -3,9 +3,11 @@ package roundtrip
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 	"time"
 
@@ -96,5 +98,85 @@ func Test_RoundtripWithPOST(t *testing.T) {
 		t.Fatal(err)
 	} else if string(v) != "success" {
 		t.Fatalf("expected %q, got %q", "success", v)
+	}
+}
+
+func Test_GetReqBody(t *testing.T) {
+	v := user{"test"}
+	b, err := json.Marshal(v)
+	if err != nil {
+		t.Fatal(err)
+	}
+	in, err := http.NewRequest("POST", "test", bytes.NewReader(b))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := GetReqBody(in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(got, b) {
+		t.Errorf("parse() got = %+v, but want = %+v", got, b)
+	}
+}
+
+func GetReqBody(req *http.Request) ([]byte, error) {
+	if req.Body != nil {
+		body, err := ioutil.ReadAll(req.Body)
+		if err != nil {
+			return nil, err
+		}
+		return body, nil
+	}
+	return nil, errors.New("request body is nil")
+}
+
+func CopyReq(req *http.Request) (*http.Request, error) {
+	if req.GetBody != nil {
+		newReq := *req
+		var err error
+		newReq.Body, err = req.GetBody()
+		if err != nil {
+			return nil, err
+		}
+		req = &newReq
+		return req, nil
+	}
+	return nil, errors.New("request body is nil")
+}
+
+func Benchmark_GetReqBody(b *testing.B) {
+	v := user{"test"}
+	body, err := json.Marshal(v)
+	if err != nil {
+		b.Fatal(err)
+	}
+	in, err := http.NewRequest("POST", "test", bytes.NewReader(body))
+	if err != nil {
+		b.Fatal(err)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if outBody, err := GetReqBody(in); err != nil {
+			b.Log(outBody, err)
+		}
+	}
+}
+
+func Benchmark_CopyReq(b *testing.B) {
+	v := user{"test"}
+	body, err := json.Marshal(v)
+	if err != nil {
+		b.Fatal(err)
+	}
+	in, err := http.NewRequest("POST", "test", bytes.NewReader(body))
+	if err != nil {
+		b.Fatal(err)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if req, err := CopyReq(in); err != nil {
+			b.Log(req, err)
+		}
 	}
 }
