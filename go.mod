@@ -6,6 +6,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/golang/gddo v0.0.0-20200604155040-845892271f91
 	github.com/google/go-github/v28 v28.1.1
+	github.com/gorilla/mux v1.7.4
 	github.com/mitchellh/hashstructure v1.0.0
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/stretchr/testify v1.4.0
