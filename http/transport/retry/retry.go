@@ -23,15 +23,12 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	var (
 		counter int = -1
 		// copy the request body because of rewind it
-		b []byte
+		b   []byte
+		err error
 	)
-	if req.Body != nil {
-		// todo: improve how to read a request body
-		body, err := ioutil.ReadAll(req.Body)
-		if err != nil {
-			return nil, err
-		}
-		b = body
+	b, err = getReqBody(req)
+	if err != nil {
+		return nil, err
 	}
 	for {
 		counter++
@@ -59,4 +56,15 @@ var retryStatuses = map[int]struct{}{
 func shouldRetry(status int) bool {
 	_, exist := retryStatuses[status]
 	return exist
+}
+
+func getReqBody(req *http.Request) ([]byte, error) {
+	if req.Body != nil {
+		body, err := ioutil.ReadAll(req.Body)
+		if err != nil {
+			return nil, err
+		}
+		return body, nil
+	}
+	return nil, nil
 }

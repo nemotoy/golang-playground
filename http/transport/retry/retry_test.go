@@ -3,7 +3,6 @@ package roundtrip
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -111,24 +110,13 @@ func Test_GetReqBody(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	got, err := GetReqBody(in)
+	got, err := getReqBody(in)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(got, b) {
 		t.Errorf("parse() got = %+v, but want = %+v", got, b)
 	}
-}
-
-func GetReqBody(req *http.Request) ([]byte, error) {
-	if req.Body != nil {
-		body, err := ioutil.ReadAll(req.Body)
-		if err != nil {
-			return nil, err
-		}
-		return body, nil
-	}
-	return nil, errors.New("request body is nil")
 }
 
 func Benchmark_GetReqBody(b *testing.B) {
@@ -143,7 +131,7 @@ func Benchmark_GetReqBody(b *testing.B) {
 	}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		if outBody, err := GetReqBody(in); err != nil {
+		if outBody, err := getReqBody(in); err != nil {
 			b.Log(outBody, err)
 		}
 	}
