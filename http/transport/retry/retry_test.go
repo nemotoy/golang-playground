@@ -131,20 +131,6 @@ func GetReqBody(req *http.Request) ([]byte, error) {
 	return nil, errors.New("request body is nil")
 }
 
-func CopyReq(req *http.Request) (*http.Request, error) {
-	if req.GetBody != nil {
-		newReq := *req
-		var err error
-		newReq.Body, err = req.GetBody()
-		if err != nil {
-			return nil, err
-		}
-		req = &newReq
-		return req, nil
-	}
-	return nil, errors.New("request body is nil")
-}
-
 func Benchmark_GetReqBody(b *testing.B) {
 	v := user{"test"}
 	body, err := json.Marshal(v)
@@ -159,24 +145,6 @@ func Benchmark_GetReqBody(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		if outBody, err := GetReqBody(in); err != nil {
 			b.Log(outBody, err)
-		}
-	}
-}
-
-func Benchmark_CopyReq(b *testing.B) {
-	v := user{"test"}
-	body, err := json.Marshal(v)
-	if err != nil {
-		b.Fatal(err)
-	}
-	in, err := http.NewRequest("POST", "test", bytes.NewReader(body))
-	if err != nil {
-		b.Fatal(err)
-	}
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		if req, err := CopyReq(in); err != nil {
-			b.Log(req, err)
 		}
 	}
 }
