@@ -8,15 +8,13 @@ import (
 )
 
 func Test_SampleUnmarshalJSON(t *testing.T) {
-	in := `{"key":"keyA", "data":[{"b":"false","i":"0","s":""}]}`
-	out := &Sample{
+	in := `{"key":"keyA", "data":{"s":"SSS","i":"100","b":"true"}}`
+	out := Sample{
 		Key: "keyA",
-		Data: []Data{
-			&SourceA{
-				S: "SSS",
-				I: 100,
-				B: true,
-			},
+		Data: &SourceA{
+			S: "SSS",
+			I: 100,
+			B: true,
 		},
 	}
 	var v Sample
@@ -30,7 +28,7 @@ func Test_SampleUnmarshalJSON(t *testing.T) {
 
 type Sample struct {
 	Key  string `json:"key"`
-	Data []Data `json:"data"`
+	Data Data   `json:"data"`
 }
 
 type Data interface {
@@ -39,8 +37,28 @@ type Data interface {
 
 type SourceA struct {
 	S string `json:"s"`
-	I int    `json:"i"`
-	B bool   `json:"b"`
+	I int    `json:"i,string"`
+	B bool   `json:"b,string"`
 }
 
 func (*SourceA) Data() {}
+
+func (s *Sample) UnmarshalJSON(data []byte) error {
+	type alias Sample
+	a := struct {
+		Data json.RawMessage `json:"data"`
+		*alias
+	}{
+		alias: (*alias)(s),
+	}
+	if err := json.Unmarshal(data, &a); err != nil {
+		return err
+	}
+	var sa SourceA
+	if err := json.Unmarshal(a.Data, &sa); err != nil {
+		return err
+	}
+	s.Data = &sa
+
+	return nil
+}
