@@ -28,7 +28,7 @@ func Test_Roundtrip(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	c := &http.Client{Transport: &Transport{MaxRetries: wantRetries, RetryFunc: ShouldRetry}}
+	c := &http.Client{Transport: &Transport{MaxRetries: wantRetries}}
 	resp, err := c.Get(ts.URL)
 	if err != nil {
 		t.Fatal(err)

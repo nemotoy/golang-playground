@@ -16,11 +16,14 @@ func (t *Transport) transport() http.RoundTripper {
 
 type Transport struct {
 	Transport  http.RoundTripper
-	MaxRetries int // if above it, stop executing a request
-	RetryFunc  func(res *http.Response, err error) bool
+	MaxRetries int                                      // if above it, stop executing a request
+	RetryFunc  func(res *http.Response, err error) bool // TODO: consider whether this type signature is appropriate
 }
 
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if t.Transport == nil {
+		t.RetryFunc = ShouldRetry
+	}
 	var (
 		counter int = -1
 		// copy the request body because of rewind it
