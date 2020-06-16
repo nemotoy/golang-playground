@@ -17,6 +17,7 @@ func (t *Transport) transport() http.RoundTripper {
 type Transport struct {
 	Transport  http.RoundTripper
 	MaxRetries int // if above it, stop executing a request
+	RetryFunc  func(res *http.Response, err error) bool
 }
 
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
@@ -33,8 +34,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	for {
 		counter++
 		res, err := t.transport().RoundTrip(req)
-		// todo: abstract
-		if err != nil || (res != nil && shouldRetry(res.StatusCode)) {
+		if t.RetryFunc(res, err) {
 			if counter == t.MaxRetries {
 				return nil, fmt.Errorf("achieved given max retries, then failed to request: error = %v, stauts code = %d", err, res.StatusCode)
 			}
@@ -49,11 +49,15 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 }
 
+func ShouldRetry(res *http.Response, err error) bool {
+	return err != nil || (res != nil && shouldRetryStatus(res.StatusCode))
+}
+
 var retryStatuses = map[int]struct{}{
 	http.StatusInternalServerError: struct{}{},
 }
 
-func shouldRetry(status int) bool {
+func shouldRetryStatus(status int) bool {
 	_, exist := retryStatuses[status]
 	return exist
 }

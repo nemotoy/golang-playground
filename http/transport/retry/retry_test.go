@@ -28,7 +28,7 @@ func Test_Roundtrip(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	c := &http.Client{Transport: &Transport{MaxRetries: wantRetries}}
+	c := &http.Client{Transport: &Transport{MaxRetries: wantRetries, RetryFunc: ShouldRetry}}
 	resp, err := c.Get(ts.URL)
 	if err != nil {
 		t.Fatal(err)
@@ -71,7 +71,7 @@ func Test_RoundtripWithPOST(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	c := &http.Client{Transport: &Transport{MaxRetries: wantRetries}}
+	c := &http.Client{Transport: &Transport{MaxRetries: wantRetries, RetryFunc: ShouldRetry}}
 	v := user{wantName}
 	b, err := json.Marshal(v)
 	if err != nil {
