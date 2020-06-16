@@ -8,7 +8,7 @@ import (
 )
 
 func Test_SampleUnmarshalJSON(t *testing.T) {
-	in := `{"key":"keyA", "data":{"s":"SSS","i":"100","b":"true"}}`
+	in := `{"key":"keyA","data":{"s":"SSS","i":"100","b":"true"}}`
 	out := Sample{
 		Key: "keyA",
 		Data: &SourceA{
@@ -21,7 +21,7 @@ func Test_SampleUnmarshalJSON(t *testing.T) {
 	if err := json.Unmarshal([]byte(in), &v); err != nil {
 		t.Fatal(err)
 	}
-	if diff := cmp.Diff(v, out); diff != "" {
+	if diff := cmp.Diff(out, v); diff != "" {
 		t.Errorf("Find() mismatch (-want +got):\n%s", diff)
 	}
 }
@@ -54,10 +54,13 @@ func (s *Sample) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &a); err != nil {
 		return err
 	}
+
+	// store an implementation of the interface
 	var sa SourceA
 	if err := json.Unmarshal(a.Data, &sa); err != nil {
 		return err
 	}
+	// &sa implement the Data interface, so could assign it.
 	s.Data = &sa
 
 	return nil
