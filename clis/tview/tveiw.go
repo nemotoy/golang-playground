@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -13,8 +14,11 @@ var ctype = flag.String("ct", "test", "represents tview component type")
 type ComponentType string
 
 const (
-	boxType  ComponentType = "box"
-	listType ComponentType = "list"
+	boxType   ComponentType = "box"
+	listType  ComponentType = "list"
+	formType  ComponentType = "form"
+	pagesType ComponentType = "pages"
+	modalType ComponentType = "modal"
 )
 
 func castComponent(s string) ComponentType {
@@ -48,6 +52,56 @@ func main() {
 				app.Stop()
 			})
 		if err := app.SetRoot(list, true).SetFocus(list).Run(); err != nil {
+			log.Fatal(err)
+		}
+	case formType:
+		form := tview.NewForm().
+			AddDropDown("Title", []string{"Mr.", "Ms.", "Mrs.", "Dr.", "Prof."}, 0, nil).
+			AddInputField("First name", "", 20, nil, nil).
+			AddInputField("Last name", "", 20, nil, nil).
+			AddCheckbox("Age 18+", false, nil).
+			AddPasswordField("Password", "", 10, '*', nil).
+			AddButton("Save", nil).
+			AddButton("Quit", func() {
+				app.Stop()
+			})
+		form.SetBorder(true).SetTitle("Enter some data").SetTitleAlign(tview.AlignLeft)
+		if err := app.SetRoot(form, true).SetFocus(form).Run(); err != nil {
+			log.Fatal(err)
+		}
+	case pagesType:
+		pageCount := 5
+		pages := tview.NewPages()
+		for page := 0; page < pageCount; page++ {
+			func(page int) {
+				pages.AddPage(fmt.Sprintf("page-%d", page),
+					tview.NewModal().
+						SetText(fmt.Sprintf("This is page %d. Choose where to go next.", page+1)).
+						AddButtons([]string{"Next", "Quit"}).
+						SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+							if buttonIndex == 0 {
+								pages.SwitchToPage(fmt.Sprintf("page-%d", (page+1)%pageCount))
+							} else {
+								app.Stop()
+							}
+						}),
+					false,
+					page == 0)
+			}(page)
+		}
+		if err := app.SetRoot(pages, true).SetFocus(pages).Run(); err != nil {
+			log.Fatal(err)
+		}
+	case modalType:
+		modal := tview.NewModal().
+			SetText("Do you want to quit the application?").
+			AddButtons([]string{"Quit", "Cancel"}).
+			SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+				if buttonLabel == "Quit" {
+					app.Stop()
+				}
+			})
+		if err := app.SetRoot(modal, false).SetFocus(modal).Run(); err != nil {
 			log.Fatal(err)
 		}
 	default:
