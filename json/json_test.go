@@ -26,6 +26,25 @@ func Test_SampleUnmarshalJSON(t *testing.T) {
 	}
 }
 
+func Test_SampleMarshalJSON(t *testing.T) {
+	in := Sample{
+		Key: "keyA",
+		Data: &SourceA{
+			S: "SSS",
+			I: 100,
+			B: true,
+		},
+	}
+	out := `{"key":"keyA","data":{"s":"SSS","i":"100","b":"true"}}`
+	v, err := json.Marshal(in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if diff := cmp.Diff([]byte(out), v); diff != "" {
+		t.Errorf("Find() mismatch (-want +got):\n%s", diff)
+	}
+}
+
 type Sample struct {
 	Key  string `json:"key"`
 	Data Data   `json:"data"`
