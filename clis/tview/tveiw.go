@@ -21,14 +21,21 @@ const (
 	modalType ComponentType = "modal"
 )
 
+const usage = `See the below article.
+https://github.com/rivo/tview/wiki`
+
 func castComponent(s string) ComponentType {
 	return ComponentType(s)
 }
 
 // implenment as cli below demos.
 // https://github.com/rivo/tview/wiki
+// nolint:gocyclo
 func main() {
 	flag.Parse()
+	flag.Usage = func() {
+		fmt.Println(usage)
+	}
 	if *ctype == "" {
 		os.Exit(1)
 	}
@@ -106,5 +113,6 @@ func main() {
 		}
 	default:
 		log.Printf("given component type is not found: %s", ct)
+		flag.Usage()
 	}
 }
