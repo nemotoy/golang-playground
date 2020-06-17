@@ -10,6 +10,7 @@ require (
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/mitchellh/hashstructure v1.0.0
 	github.com/olekukonko/tablewriter v0.0.4
+	github.com/rivo/tview v0.0.0-20200528200248-fe953220389f
 	github.com/stretchr/testify v1.4.0
 	go.uber.org/multierr v1.5.0
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550 // indirect
