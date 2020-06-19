@@ -10,7 +10,7 @@ import (
 
 func Test_ChainRoundtrip(t *testing.T) {
 	f := &flag{mu: &sync.Mutex{}}
-	c := &http.Client{Transport: &FirstTransport{Transport: &SecondTransport{f: f}, f: f}}
+	c := NewChainedTransports(f)
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !f.f {

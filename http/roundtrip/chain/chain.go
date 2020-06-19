@@ -38,8 +38,18 @@ type SecondTransport struct {
 
 func (t *SecondTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	t.f.mu.Lock()
-	defer t.f.mu.Unlock()
 	t.f.f = true
+	defer t.f.mu.Unlock()
 	log.Printf("#SecondTransport.flag: %v\n", t.f.f)
 	return ClassifyTransport(t.Transport).RoundTrip(req)
+}
+
+// TODO: fix implementation to improve a versatility
+func NewChainedTransports(f *flag) *http.Client {
+	return &http.Client{
+		Transport: &FirstTransport{
+			Transport: &SecondTransport{f: f},
+			f:         f,
+		},
+	}
 }
