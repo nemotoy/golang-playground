@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-func transport(t http.RoundTripper) http.RoundTripper {
+func ClassifyTransport(t http.RoundTripper) http.RoundTripper {
 	if t == nil {
 		return http.DefaultTransport
 	}
@@ -28,7 +28,7 @@ func (t *FirstTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	t.f.f = false
 	t.f.mu.Unlock()
 	log.Printf("#FirstTransport.flag: %v\n", t.f.f)
-	return transport(t.Transport).RoundTrip(req)
+	return ClassifyTransport(t.Transport).RoundTrip(req)
 }
 
 type SecondTransport struct {
@@ -41,5 +41,5 @@ func (t *SecondTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	defer t.f.mu.Unlock()
 	t.f.f = true
 	log.Printf("#SecondTransport.flag: %v\n", t.f.f)
-	return transport(t.Transport).RoundTrip(req)
+	return ClassifyTransport(t.Transport).RoundTrip(req)
 }
