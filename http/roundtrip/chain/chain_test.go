@@ -61,7 +61,7 @@ func Benchmark_headTransport(b *testing.B) {
 	}
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		w.Write([]byte("success!"))
+		w.Write([]byte("hello"))
 	}))
 	defer ts.Close()
 	b.ResetTimer()
@@ -96,5 +96,43 @@ func Benchmark_headTransportNonChain(b *testing.B) {
 		if err != nil {
 			b.Fatal(err)
 		}
+	}
+}
+
+func Test_headTransport(t *testing.T) {
+
+	f := &flag{mu: &sync.Mutex{}, f: true}
+	hm := map[hkey]hval{
+		"keyA": "valA",
+	}
+	c := &http.Client{
+		Transport: &headTransport{
+			Transport: &FirstTransport{f: f},
+			h:         hm,
+		},
+	}
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		headKey := r.Header.Get("keyA")
+		if headKey != "valA" {
+			t.Errorf("request header is invalid: %s", headKey)
+		}
+		w.WriteHeader(200)
+		w.Write([]byte("hello!"))
+	}))
+	defer ts.Close()
+	resp, err := c.Get(ts.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if f.f {
+		t.Fatalf("expected false, got %v", f.f)
+	}
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("expected 200, got %d", resp.StatusCode)
+	}
+	if v, err := ioutil.ReadAll(resp.Body); err != nil {
+		t.Fatal(err)
+	} else if string(v) != "hello!" {
+		t.Fatalf("expected %q, got %q", "hello!", v)
 	}
 }
