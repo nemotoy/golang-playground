@@ -44,3 +44,14 @@ func Test_SampleMarshalJSON(t *testing.T) {
 		t.Errorf("Find() mismatch (-want +got):\n%s", diff)
 	}
 }
+
+func Benchmark_SampleUnmarshalJSON(b *testing.B) {
+	in := `{"key":"keyA","data":{"s":"SSS","i":"100","b":"true"}}`
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var v Sample
+		if err := json.Unmarshal([]byte(in), &v); err != nil {
+			b.Fatal(err)
+		}
+	}
+}
