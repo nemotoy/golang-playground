@@ -17,7 +17,7 @@ ci.test:
 	$(GOTEST) -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 lint:
-	$(GOLINT) run -v ./...
+	$(GOLINT) run -v ./... -c .golangci.yaml
 
 # For local
 ci.l.check:
