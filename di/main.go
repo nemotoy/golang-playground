@@ -49,6 +49,7 @@ func (e Event) Start() {
 	fmt.Println(msg)
 }
 
+// https://github.com/google/wire/tree/master/_tutorial
 func main() {
 	e, err := InitializeEvent()
 	if err != nil {
