@@ -1,6 +1,7 @@
 package roundtrip
 
 import (
+	"bytes"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -33,5 +34,33 @@ func Test_sampleRoundtrip(t *testing.T) {
 		t.Fatal(err)
 	} else if string(v) != "success!" {
 		t.Fatalf("expected %q, got %q", "success!", v)
+	}
+}
+
+type testTransport struct{}
+
+func (t *testTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	return &http.Response{StatusCode: 200, Body: ioutil.NopCloser(bytes.NewBuffer([]byte("test")))}, nil
+}
+
+func Test_testRoundtrip(t *testing.T) {
+
+	c := &http.Client{Transport: &testTransport{}}
+	req, err := http.NewRequest(http.MethodGet, "test", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp, err := c.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		t.Fatalf("expected 200, got %d", resp.StatusCode)
+	}
+	if v, err := ioutil.ReadAll(resp.Body); err != nil {
+		t.Fatal(err)
+	} else if string(v) != "test" {
+		t.Fatalf("expected %q, got %q", "test", v)
 	}
 }
