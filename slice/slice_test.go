@@ -24,6 +24,7 @@ func Test_f2(t *testing.T) {
 	}
 }
 
+// nolint
 var f = func(ss []string) {
 	ss = append(ss, "d")
 }

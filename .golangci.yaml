@@ -11,12 +11,12 @@ issues:
       linters:
         - gocyclo
         - errcheck
+        - ineffassign
 
 linters:
   disable-all: true
   enable:
     - goimports
-    - golint
     - govet
     - misspell
     - errcheck
