@@ -8,6 +8,7 @@ require (
 	github.com/google/go-github/v28 v28.1.1
 	github.com/google/wire v0.4.0
 	github.com/gorilla/mux v1.7.4
+	github.com/graphql-go/graphql v0.7.9
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/mitchellh/hashstructure v1.0.0
 	github.com/olekukonko/tablewriter v0.0.4
