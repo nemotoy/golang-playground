@@ -83,8 +83,8 @@ func Test_RoundtripWithPOST(t *testing.T) {
 	}
 	ctx, cf := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cf()
-	_ = req.WithContext(ctx)
-	resp, err := c.Do(req)
+	req2 := req.WithContext(ctx)
+	resp, err := c.Do(req2)
 	if err != nil {
 		t.Fatal(err)
 	}
