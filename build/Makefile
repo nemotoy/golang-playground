@@ -18,7 +18,7 @@ clean:
 	$(GOCMD) clean
 
 build.docker:
-	$(DOCKERCMD) build -t $(DOCKERIMAGE) .
+	$(DOCKERCMD) build -t $(DOCKERIMAGE) --build-arg VERSION=v1.0.0 .
 
 run.docker:
 	$(DOCKERCMD) run $(DOCKERIMAGE)
