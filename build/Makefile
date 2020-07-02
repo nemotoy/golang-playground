@@ -2,6 +2,8 @@ APPNAME=sampleApp
 NOW=$(shell date "+%Y-%m-%dT%H:%M:%SZ")
 GOCMD=go
 GOBUILD=$(GOCMD) build
+DOCKERCMD=docker
+DOCKERIMAGE=sample_app
 
 build:
 	# -X is a option in the go tool link to set value into a variable. (ref. https://golang.org/cmd/link/)
@@ -14,3 +16,12 @@ run:
 clean:
 	rm $(APPNAME)
 	$(GOCMD) clean
+
+build.docker:
+	$(DOCKERCMD) build -t $(DOCKERIMAGE) .
+
+run.docker:
+	$(DOCKERCMD) run $(DOCKERIMAGE)
+
+clean.docker:
+	$(DOCKERCMD) image rm -f $(DOCKERIMAGE)
