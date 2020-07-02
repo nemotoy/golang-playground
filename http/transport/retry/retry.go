@@ -16,13 +16,13 @@ func (t *Transport) transport() http.RoundTripper {
 
 type Transport struct {
 	Transport  http.RoundTripper
-	MaxRetries int                                      // if above it, stop executing a request
-	RetryFunc  func(res *http.Response, err error) bool // TODO: consider whether this type signature is appropriate
+	MaxRetries int // if above it, stop executing a request
+	RetryFunc  func(res *http.Response, err error) bool
 }
 
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
-	if t.Transport == nil {
-		t.RetryFunc = ShouldRetry
+	if t.RetryFunc == nil {
+		t.RetryFunc = defaultRetry
 	}
 	var (
 		counter int = -1
@@ -52,7 +52,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 }
 
-func ShouldRetry(res *http.Response, err error) bool {
+func defaultRetry(res *http.Response, err error) bool {
 	return err != nil || (res != nil && shouldRetryStatus(res.StatusCode))
 }
 

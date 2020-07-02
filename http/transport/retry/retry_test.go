@@ -71,7 +71,7 @@ func Test_RoundtripWithPOST(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	c := &http.Client{Transport: &Transport{MaxRetries: wantRetries, RetryFunc: ShouldRetry}}
+	c := &http.Client{Transport: &Transport{MaxRetries: wantRetries, RetryFunc: nil}}
 	v := user{wantName}
 	b, err := json.Marshal(v)
 	if err != nil {
