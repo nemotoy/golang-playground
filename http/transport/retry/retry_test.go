@@ -136,3 +136,17 @@ func Benchmark_GetReqBody(b *testing.B) {
 		}
 	}
 }
+
+func Benchmark_shouldRetryStatus(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		shouldRetryStatus(i)
+	}
+}
+
+func Benchmark_shouldRetryWithSwitch(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		shouldRetryWithSwitch(i)
+	}
+}

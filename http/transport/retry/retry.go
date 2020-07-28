@@ -56,13 +56,16 @@ func defaultRetry(res *http.Response, err error) bool {
 	return err != nil || (res != nil && shouldRetryStatus(res.StatusCode))
 }
 
-var retryStatuses = map[int]struct{}{
-	http.StatusInternalServerError: struct{}{},
+func shouldRetryStatus(status int) bool {
+	return status == http.StatusInternalServerError || status == http.StatusBadGateway
 }
 
-func shouldRetryStatus(status int) bool {
-	_, exist := retryStatuses[status]
-	return exist
+func shouldRetryWithSwitch(status int) bool {
+	switch status {
+	case http.StatusInternalServerError, http.StatusBadGateway:
+		return true
+	}
+	return false
 }
 
 func getReqBody(req *http.Request) ([]byte, error) {
