@@ -9,7 +9,7 @@ import (
 	"github.com/rivo/tview"
 )
 
-var ctype = flag.String("ct", "test", "represents tview component type")
+var ctype = flag.String("c", "test", "represents tview component type")
 
 type ComponentType string
 
@@ -37,11 +37,6 @@ func usage() {
 func main() {
 	flag.Parse()
 	flag.Usage = usage
-
-	args := flag.Args()
-	if len(args) == 0 {
-		flag.Usage()
-	}
 
 	app := tview.NewApplication()
 	ct := castComponent(*ctype)
