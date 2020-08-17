@@ -5,6 +5,7 @@ import (
 	"errors"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jinzhu/gorm"
@@ -53,4 +54,18 @@ func Test_DB(t *testing.T) {
 	if !reflect.DeepEqual(db, sqlDB) {
 		t.Errorf("parse() got = %+v, but want = %+v", db, sqlDB)
 	}
+}
+
+func Test_Conn(t *testing.T) {
+	db, _, err := sqlmock.New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("%+v", db)
+
+	db.SetMaxIdleConns(5)
+	db.SetMaxOpenConns(10)
+	db.SetConnMaxLifetime(1 * time.Minute)
+
+	t.Logf("%+v", db)
 }
