@@ -19,6 +19,13 @@ func Test_DB(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	forTypeAssert := db
+	var arg interface{} = forTypeAssert
+	_, ok := arg.(gorm.SQLCommon)
+	if !ok {
+		t.Fatal("db type is invalid.")
+	}
+
 	gDB, err := gorm.Open("mysql", db)
 	if err != nil {
 		t.Fatal(err)
