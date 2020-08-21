@@ -5,9 +5,7 @@ import (
 	"testing"
 )
 
-type stub struct {
-	s string
-}
+type stub struct{}
 
 func Test_zero(t *testing.T) {
 	var ii map[int64]stub

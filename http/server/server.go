@@ -61,7 +61,7 @@ pingとsleepハンドラは独立しており、sleepハンドラで待機して
 func ping(w http.ResponseWriter, r *http.Request) {
 	log.Println("Received Request: ping")
 	w.Header().Set("Content-Type", "text/plain")
-	_, _ = w.Write([]byte("ping\n"))
+	w.Write([]byte("ping\n"))
 }
 
 func sleep(w http.ResponseWriter, r *http.Request) {

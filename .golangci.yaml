@@ -4,6 +4,8 @@ run:
 linters-settings:
   gocyclo:
     min-complexity: 15
+  errcheck:
+    ignore: Read|Write|Close|Exec
 
 issues:
   exclude-rules:
