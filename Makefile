@@ -20,6 +20,7 @@ lint:
 	$(GOLINT) run -v ./... -c .golangci.yaml
 
 # For local
+# need install Circleci CLI（ref. https://circleci.com/docs/2.0/local-cli/#installation）
 ci.l.check:
 	${CI} config validate ${CICONF}
 
