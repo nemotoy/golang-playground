@@ -22,11 +22,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	buckets, err := list(client, "test")
-	if err != nil {
-		log.Fatalf("failed to list: %v", err)
-	}
-	fmt.Printf("buckets: %+v\n", buckets)
+	// 不要
+	// buckets, err := list(client, "test")
+	// if err != nil {
+	// 	log.Fatalf("failed to list: %v", err)
+	// }
+	// fmt.Printf("buckets: %+v\n", buckets)
 
 	const (
 		bucketName = "sample-bucket"
