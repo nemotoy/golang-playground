@@ -22,17 +22,15 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// 不要
-	// buckets, err := list(client, "test")
-	// if err != nil {
-	// 	log.Fatalf("failed to list: %v", err)
-	// }
-	// fmt.Printf("buckets: %+v\n", buckets)
 
 	const (
 		bucketName = "sample-bucket"
 		fileKey    = "some_file.txt"
 	)
+	// writeObject(client, bucketName, fileKey, nil)
+	// if err != nil {
+	// 	log.Fatalf("failed to write object: %v", err)
+	// }
 	data, err := downloadFile(client, bucketName, fileKey)
 	if err != nil {
 		log.Fatalf("failed to download file: %v", err)
@@ -61,21 +59,38 @@ const (
 	objectPathPrefix = "o/"
 )
 
-func genBucketPath(bucketName string) string {
+func genReadBucketPath(bucketName string) string {
 	return bucketPathPrefix + bucketName
 }
 
-func genObjectPath(objectName string) string {
+func genReadObjectPath(objectName string) string {
 	return objectPathPrefix + objectName
 }
 
 func downloadFile(client *storage.Client, bucketName, fileKey string) ([]byte, error) {
 	// NOTE: fsouza/fake-gcs-serverのルータが期待するパスに生成する。
 	// ref. https://github.com/fsouza/fake-gcs-server/blob/main/fakestorage/server.go
-	reader, err := client.Bucket(genBucketPath(bucketName)).Object(genObjectPath(fileKey)).NewReader(context.TODO())
+	reader, err := client.Bucket(genReadBucketPath(bucketName)).Object(genReadObjectPath(fileKey)).NewReader(context.TODO())
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a reader: %v", err)
 	}
 	defer reader.Close()
 	return ioutil.ReadAll(reader)
+}
+
+func writeObject(client *storage.Client, bucketName, fileKey string, data []byte) error {
+	/*
+		NOTE: fsouza/fake-gcs-serverのルータが期待するパスに生成する。
+		ref. https://github.com/fsouza/fake-gcs-server/blob/main/fakestorage/server.go#L191
+
+		コンテナ内部では、/storage/<bucket_name>/に書き込まれる。
+		/ # ls storage/sample-bucket/
+		some_file.txt    some_file_2.txt
+	*/
+	writer := client.Bucket(bucketName).Object(fileKey).NewWriter(context.TODO())
+	defer writer.Close()
+	if _, err := writer.Write(data); err != nil {
+		return err
+	}
+	return nil
 }
