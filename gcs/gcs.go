@@ -14,6 +14,7 @@ import (
 )
 
 // クライアント生成時のオプションとバケット・オブジェクトパスの生成ルールを整理しないと使えない。
+// nolint:gosec
 func main() {
 	transCfg := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // ignore expired SSL certificates
