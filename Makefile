@@ -27,3 +27,7 @@ ci.l.check:
 ci.l.test:
 	${CI} config process ${CICONF} > ${CILOCCONF}
 	${CI} build --job test -c ${CILOCCONF}
+
+# For setup gcs on local.
+gcs.run:
+	docker start --name fake-gcs-server -p 4443:4443 -v ${PWD}/gcs/data:/data fsouza/fake-gcs-server
