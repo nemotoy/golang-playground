@@ -27,6 +27,7 @@ func main() {
 		bucketName = "sample-bucket"
 		fileKey    = "some_file.txt"
 	)
+	// TODO: 別ファイルに切り出す、あるいはCLIにする。
 	// writeObject(client, bucketName, fileKey, nil)
 	// if err != nil {
 	// 	log.Fatalf("failed to write object: %v", err)
