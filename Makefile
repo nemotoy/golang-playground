@@ -30,4 +30,4 @@ ci.l.test:
 
 # For setup gcs on local.
 gcs.run:
-	docker start --name fake-gcs-server -p 4443:4443 -v ${PWD}/gcs/data:/data fsouza/fake-gcs-server
+	docker run --name fake-gcs-server -p 4443:4443 -v ${PWD}/gcs/data:/data fsouza/fake-gcs-server
