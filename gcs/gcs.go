@@ -13,7 +13,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-// クライアント生成時のオプションとバケット・オブジェクトパスの生成ルールを整理しないと使えない。
+// TODO: クライアント生成時のオプションとバケット・オブジェクトパスの生成ルールを整理しないと使えない。UTでコンテナ起動してGET/POSTする。
 // nolint:gosec
 func main() {
 	transCfg := &http.Transport{
