@@ -13,6 +13,7 @@ import (
 	"google.golang.org/api/option"
 )
 
+// クライアント生成時のオプションとバケット・オブジェクトパスの生成ルールを整理しないと使えない。
 func main() {
 	transCfg := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // ignore expired SSL certificates
