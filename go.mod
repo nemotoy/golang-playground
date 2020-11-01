@@ -19,6 +19,7 @@ require (
 	github.com/stretchr/testify v1.5.1
 	go.uber.org/goleak v1.0.0
 	go.uber.org/multierr v1.5.0
+	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20200822124328-c89045814202
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0
 	google.golang.org/api v0.31.0
