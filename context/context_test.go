@@ -19,6 +19,7 @@ type val struct {
 // WithValue()のレシーバは、 valueCtxであり Context インターフェースが埋め込まれているため、Contextメソッドも利用できる実装である。
 // Contextインターフェースへの操作が実施されても、key/valueへの副作用は発生しない。(valueCtx, timerCtx, cancelCtx)
 // https://blog.golang.org/context
+// https://blog.gopheracademy.com/advent-2016/context-logging/
 func TestCtx(t *testing.T) {
 	ctx := context.Background()
 	in := &val{s: "sss", i: 100}
