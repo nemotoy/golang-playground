@@ -13,7 +13,7 @@ import (
 
 var hook = func(e zapcore.Entry, d zapcore.SamplingDecision) {
 	// If SamplingDecision is 1, ignore this entry.
-	fmt.Printf("entry: %+v, dicision: %d\n", e, d)
+	// fmt.Printf("entry: %+v, dicision: %d\n", e, d)
 }
 
 func main() {
@@ -71,7 +71,9 @@ func main() {
 	logger := zap.New(core, opt...)
 	defer logger.Sync()
 
+	now := time.Now()
 	for i := 1; i <= 100; i++ {
 		logger.Info(fmt.Sprintf("message(n=%d)", i))
 	}
+	fmt.Println(time.Now().Sub(now))
 }
