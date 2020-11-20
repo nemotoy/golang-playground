@@ -23,23 +23,8 @@ var hook = func(e zapcore.Entry, d zapcore.SamplingDecision) {
 }
 
 func main() {
-	conf()
-}
-
-func conf() {
-	conf := zap.NewDevelopmentConfig()
-	conf.Sampling = &zap.SamplingConfig{
-		Initial:    5,
-		Thereafter: 10,
-		Hook:       hook,
-	}
-	// Build()はconf.Samplingがnilでなければ、内部でSamplerを初期化してくれる。その際のDurationは1s。
-	logger, err := conf.Build()
-	if err != nil {
-		panic(err)
-	}
+	logger := fromConf()
 	defer logger.Sync()
-
 	start := time.Now()
 	for i := 1; i <= 100; i++ {
 		logger.Info("Info message",
@@ -52,7 +37,22 @@ func conf() {
 	fmt.Printf("took %s\n", elapsed)
 }
 
-func new() {
+func fromConf() *zap.Logger {
+	conf := zap.NewDevelopmentConfig()
+	conf.Sampling = &zap.SamplingConfig{
+		Initial:    5,
+		Thereafter: 10,
+		Hook:       hook,
+	}
+	// Build()はconf.Samplingがnilでなければ、内部でSamplerを初期化してくれる。その際のDurationは1s。
+	logger, err := conf.Build()
+	if err != nil {
+		panic(err)
+	}
+	return logger
+}
+
+func fromCore() *zap.Logger {
 	// The bundled Config struct only supports the most common configuration
 	// options. More complex needs, like splitting logs between multiple files
 	// or writing to non-file outputs, require use of the zapcore package.
@@ -104,17 +104,5 @@ func new() {
 	}
 
 	// From a zapcore.Core, it's easy to construct a Logger.
-	logger := zap.New(core, opt...)
-	defer logger.Sync()
-
-	start := time.Now()
-	for i := 1; i <= 100; i++ {
-		logger.Info("Info message",
-			zap.String("url", "someurl"),
-			zap.Int("attempt", i),
-			zap.Duration("backoff", time.Second),
-		)
-	}
-	elapsed := time.Since(start)
-	fmt.Printf("took %s\n", elapsed)
+	return zap.New(core, opt...)
 }
