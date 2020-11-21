@@ -10,7 +10,7 @@ require (
 	github.com/google/go-github/v28 v28.1.1
 	github.com/google/wire v0.4.0
 	github.com/gorilla/mux v1.7.4
-	github.com/gorilla/websocket v1.4.2 // indirect
+	github.com/gorilla/websocket v1.4.2
 	github.com/graphql-go/graphql v0.7.9
 	github.com/jinzhu/gorm v1.9.16
 	github.com/kr/pretty v0.2.0 // indirect
