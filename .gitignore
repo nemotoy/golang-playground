@@ -16,3 +16,4 @@ coverage.txt
 ci_local.yml
 
 *.log
+vendor
