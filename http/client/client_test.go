@@ -3,9 +3,11 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"net/http/httputil"
 	"testing"
 	"time"
 )
@@ -30,6 +32,12 @@ type ss struct {
 */
 func Test_Roundtrip(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("receive")
+		dump, err := httputil.DumpRequest(r, true)
+		if err != nil {
+			t.Errorf("dump error: %+v", err)
+		}
+		t.Logf("dump: %s", string(dump))
 		time.Sleep(100 * time.Millisecond)
 		w.WriteHeader(200)
 		w.Write([]byte("hello"))
