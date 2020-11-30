@@ -1,9 +1,7 @@
 package client
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -32,23 +30,29 @@ type ss struct {
 */
 func Test_Roundtrip(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("receive")
 		dump, err := httputil.DumpRequest(r, true)
 		if err != nil {
 			t.Errorf("dump error: %+v", err)
 		}
 		t.Logf("dump: %s", string(dump))
-		time.Sleep(100 * time.Millisecond)
+
+		v, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			t.Errorf("failed to read: %v", err)
+		}
+		t.Logf("read body: %s", v)
+		// time.Sleep(100 * time.Millisecond)
 		w.WriteHeader(200)
 		w.Write([]byte("hello"))
 	}))
 	defer ts.Close()
-	var v ss
-	b, err := json.Marshal(&v)
-	if err != nil {
-		t.Fatal(err)
-	}
-	req, err := http.NewRequest(http.MethodPost, ts.URL, bytes.NewReader(b))
+	// var v ss = ss{"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+	// b, err := json.Marshal(&v)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+
+	req, err := http.NewRequest(http.MethodPost, ts.URL, errReader(0))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -66,4 +70,10 @@ func Test_Roundtrip(t *testing.T) {
 	} else if string(v) != "hello" {
 		t.Fatalf("expected %q, got %q", "hello", v)
 	}
+}
+
+type errReader int
+
+func (errReader) Read(p []byte) (n int, err error) {
+	return 0, errors.New("test error")
 }
