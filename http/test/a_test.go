@@ -32,12 +32,23 @@ func (u *userImpl) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func initHandler() http.Handler {
 	r := mux.NewRouter()
-	r.Methods("GET").Path("/ping").HandlerFunc(ping)
+	r.Methods("GET").Path("/ping").HandlerFunc(AuthMiddleware(ping))
 	r.Methods("GET").Path("/user").Handler(new(userImpl))
 	return r
 }
 
-func TestPing(t *testing.T) {
+// TODO: replace signature to func(f http.Handler) http.Handler
+var AuthMiddleware = func(f http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if v := r.Header.Get("X-Auth-Id"); v == "" {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		f(w, r)
+	}
+}
+
+func TestHandler(t *testing.T) {
 	handler := initHandler()
 
 	server := httptest.NewServer(handler)
@@ -45,19 +56,30 @@ func TestPing(t *testing.T) {
 
 	e := httpexpect.New(t, server.URL)
 
-	{
-		e.GET("/ping").
-			Expect().
-			Status(http.StatusOK).ContentType("text/plain").Text().Equal("pong\n")
-	}
-	{
-		raw := e.GET("/user").
-			Expect().
-			Status(http.StatusOK).ContentType("application/json").JSON().Object()
-		raw.ContainsMap(map[string]interface{}{
-			"name": "hoge",
-		})
-	}
+	t.Run("ping", func(t *testing.T) {
+		{
+			e.Builder(func(req *httpexpect.Request) {
+				req.WithHeader("X-Auth-Id", "test")
+			}).GET("/ping").
+				Expect().
+				Status(http.StatusOK).ContentType("text/plain").Text().Equal("pong\n")
+		}
+		{
+			e.GET("/ping").
+				Expect().
+				Status(http.StatusUnauthorized)
+		}
+	})
+	t.Run("user", func(t *testing.T) {
+		{
+			raw := e.GET("/user").
+				Expect().
+				Status(http.StatusOK).ContentType("application/json").JSON().Object()
+			raw.ContainsMap(map[string]interface{}{
+				"name": "hoge",
+			})
+		}
+	})
 }
 
 func TestMain(m *testing.M) {
