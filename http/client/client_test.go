@@ -1,13 +1,10 @@
 package client
 
 import (
-	"bytes"
 	"errors"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"net/http/httputil"
 	"testing"
 	"time"
 )
@@ -33,20 +30,20 @@ type ss struct {
 func Test_Roundtrip(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		var rr io.Reader = r.Body
-		bb := new(bytes.Buffer)
-		tr := io.TeeReader(rr, bb)
-		v, err := ioutil.ReadAll(tr)
-		if err != nil {
-			t.Errorf("failed to read: %v", err)
-			dump, err := httputil.DumpRequest(r, false)
-			if err != nil {
-				t.Errorf("dump error: %+v", err)
-			}
-			t.Logf("write: %s, dump: %s", bb, string(dump))
-			return
-		}
-		t.Logf("read body: %s", v)
+		// var rr io.Reader = r.Body
+		// bb := new(bytes.Buffer)
+		// tr := io.TeeReader(rr, bb)
+		// v, err := ioutil.ReadAll(tr)
+		// if err != nil {
+		// 	t.Errorf("failed to read: %v", err)
+		// 	dump, err := httputil.DumpRequest(r, false)
+		// 	if err != nil {
+		// 		t.Errorf("dump error: %+v", err)
+		// 	}
+		// 	t.Logf("write: %s, dump: %s", bb, string(dump))
+		// 	return
+		// }
+		// t.Logf("read body: %s", v)
 		// time.Sleep(100 * time.Millisecond)
 		w.WriteHeader(200)
 		w.Write([]byte("hello"))
