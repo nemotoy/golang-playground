@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/gavv/httpexpect/v2"
+	"github.com/gorilla/mux"
 )
 
 func ping(w http.ResponseWriter, r *http.Request) {
@@ -30,12 +31,10 @@ func (u *userImpl) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func initHandler() http.Handler {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		ping(w, r)
-	})
-	mux.Handle("/user", new(userImpl))
-	return mux
+	r := mux.NewRouter()
+	r.Methods("GET").Path("/ping").HandlerFunc(ping)
+	r.Methods("GET").Path("/user").Handler(new(userImpl))
+	return r
 }
 
 func TestPing(t *testing.T) {
