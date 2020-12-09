@@ -69,6 +69,11 @@ func TestHandler(t *testing.T) {
 				Expect().
 				Status(http.StatusUnauthorized)
 		}
+		{
+			e.POST("/ping").
+				Expect().
+				Status(http.StatusMethodNotAllowed)
+		}
 	})
 	t.Run("user", func(t *testing.T) {
 		{
