@@ -23,7 +23,7 @@ var stubUsers = map[string]User{
 }
 
 type userImpl struct {
-	users map[string]User
+	users map[string]User // TODO: replace it with collecting from a DB system.
 }
 
 type User struct {
