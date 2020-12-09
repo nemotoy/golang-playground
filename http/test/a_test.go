@@ -2,7 +2,6 @@ package examples
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -50,24 +49,25 @@ type Logger interface {
 func initHandler() http.Handler {
 	r := mux.NewRouter()
 	userHandler := &userImpl{stubUsers}
-	r.Methods("GET").Path("/ping").HandlerFunc(LoggerMiddleware(AuthMiddleware(ping)))
+	authMiddleware := &authMiddleware{}
+	r.Methods("GET").Path("/ping").HandlerFunc(ping)
 	r.Methods("GET").Path("/user").Handler(userHandler)
 	r.Methods("GET").Path("/user/{id:[0-9]+}").Handler(userHandler)
 	r.Methods("GET").Path("/user/{name}").Handler(userHandler)
+	r.Use(authMiddleware.Middleware)
 	return r
 }
 
-// TODO: replace signature to func(f http.Handler) http.Handler
-var AuthMiddleware = func(f http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+type authMiddleware struct{}
+
+func (am *authMiddleware) Middleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		v := r.Header.Get("X-Auth-Id")
 		if v == "" {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
+			http.Error(w, "", http.StatusUnauthorized)
 		}
-		fmt.Printf("Auth-id: %s\n", v)
-		f(w, r)
-	}
+		next.ServeHTTP(w, r)
+	})
 }
 
 var LoggerMiddleware = func(f http.HandlerFunc) http.HandlerFunc {
@@ -106,17 +106,23 @@ func TestHandler(t *testing.T) {
 	})
 	t.Run("user", func(t *testing.T) {
 		{
-			e.GET("/user").
+			e.Builder(func(req *httpexpect.Request) {
+				req.WithHeader("X-Auth-Id", "test")
+			}).GET("/user").
 				Expect().
 				Status(http.StatusNotFound)
 		}
 		{
-			e.GET("/user/111").
+			e.Builder(func(req *httpexpect.Request) {
+				req.WithHeader("X-Auth-Id", "test")
+			}).GET("/user/111").
 				Expect().
 				Status(http.StatusNotFound)
 		}
 		{
-			raw := e.GET("/user/aaa").
+			raw := e.Builder(func(req *httpexpect.Request) {
+				req.WithHeader("X-Auth-Id", "test")
+			}).GET("/user/aaa").
 				Expect().
 				Status(http.StatusOK).ContentType("application/json").JSON().Object()
 			raw.ContainsMap(map[string]interface{}{
