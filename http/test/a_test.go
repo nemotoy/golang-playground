@@ -2,6 +2,7 @@ package examples
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -42,10 +43,14 @@ func (u *userImpl) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(b)
 }
 
+type Logger interface {
+	Printf(format string, v ...interface{})
+}
+
 func initHandler() http.Handler {
 	r := mux.NewRouter()
 	userHandler := &userImpl{stubUsers}
-	r.Methods("GET").Path("/ping").HandlerFunc(AuthMiddleware(ping))
+	r.Methods("GET").Path("/ping").HandlerFunc(LoggerMiddleware(AuthMiddleware(ping)))
 	r.Methods("GET").Path("/user").Handler(userHandler)
 	r.Methods("GET").Path("/user/{id:[0-9]+}").Handler(userHandler)
 	r.Methods("GET").Path("/user/{name}").Handler(userHandler)
@@ -55,10 +60,19 @@ func initHandler() http.Handler {
 // TODO: replace signature to func(f http.Handler) http.Handler
 var AuthMiddleware = func(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if v := r.Header.Get("X-Auth-Id"); v == "" {
+		v := r.Header.Get("X-Auth-Id")
+		if v == "" {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
+		fmt.Printf("Auth-id: %s\n", v)
+		f(w, r)
+	}
+}
+
+var LoggerMiddleware = func(f http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// TODO: implment
 		f(w, r)
 	}
 }
