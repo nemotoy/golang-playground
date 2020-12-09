@@ -33,7 +33,8 @@ func (u *userImpl) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func initHandler() http.Handler {
 	r := mux.NewRouter()
 	r.Methods("GET").Path("/ping").HandlerFunc(AuthMiddleware(ping))
-	r.Methods("GET").Path("/user").Handler(new(userImpl))
+	// r.Methods("GET").Path("/user").Handler(new(userImpl))
+	r.Methods("GET").Path("/user/{id:[0-9]+}").Handler(new(userImpl))
 	return r
 }
 
@@ -77,12 +78,22 @@ func TestHandler(t *testing.T) {
 	})
 	t.Run("user", func(t *testing.T) {
 		{
-			raw := e.GET("/user").
+			raw := e.GET("/user/1").
 				Expect().
 				Status(http.StatusOK).ContentType("application/json").JSON().Object()
 			raw.ContainsMap(map[string]interface{}{
 				"name": "hoge",
 			})
+		}
+		{
+			e.GET("/user").
+				Expect().
+				Status(http.StatusNotFound)
+		}
+		{
+			e.GET("/user/aaaaa").
+				Expect().
+				Status(http.StatusNotFound)
 		}
 	})
 }
