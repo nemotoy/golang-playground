@@ -16,7 +16,14 @@ func ping(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("pong\n"))
 }
 
+var stubUsers = map[string]User{
+	"aaa": {Name: "aaa"},
+	"bbb": {Name: "bbb"},
+	"ccc": {Name: "ccc"},
+}
+
 type userImpl struct {
+	users map[string]User
 }
 
 type User struct {
@@ -25,16 +32,23 @@ type User struct {
 
 func (u *userImpl) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	res := User{Name: "hoge"}
-	b, _ := json.Marshal(res)
+	vars := mux.Vars(r)
+	user, ok := u.users[vars["name"]]
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	b, _ := json.Marshal(user)
 	_, _ = w.Write(b)
 }
 
 func initHandler() http.Handler {
 	r := mux.NewRouter()
+	userHandler := &userImpl{stubUsers}
 	r.Methods("GET").Path("/ping").HandlerFunc(AuthMiddleware(ping))
-	// r.Methods("GET").Path("/user").Handler(new(userImpl))
-	r.Methods("GET").Path("/user/{id:[0-9]+}").Handler(new(userImpl))
+	r.Methods("GET").Path("/user").Handler(userHandler)
+	r.Methods("GET").Path("/user/{id:[0-9]+}").Handler(userHandler)
+	r.Methods("GET").Path("/user/{name}").Handler(userHandler)
 	return r
 }
 
@@ -78,22 +92,22 @@ func TestHandler(t *testing.T) {
 	})
 	t.Run("user", func(t *testing.T) {
 		{
-			raw := e.GET("/user/1").
-				Expect().
-				Status(http.StatusOK).ContentType("application/json").JSON().Object()
-			raw.ContainsMap(map[string]interface{}{
-				"name": "hoge",
-			})
-		}
-		{
 			e.GET("/user").
 				Expect().
 				Status(http.StatusNotFound)
 		}
 		{
-			e.GET("/user/aaaaa").
+			e.GET("/user/111").
 				Expect().
 				Status(http.StatusNotFound)
+		}
+		{
+			raw := e.GET("/user/aaa").
+				Expect().
+				Status(http.StatusOK).ContentType("application/json").JSON().Object()
+			raw.ContainsMap(map[string]interface{}{
+				"name": "aaa",
+			})
 		}
 	})
 }
