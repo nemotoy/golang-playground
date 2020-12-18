@@ -38,6 +38,11 @@ func TestHandlerxxx(t *testing.T) {
 	})
 	t.Run("user", func(t *testing.T) {
 		{
+			e.GET("/user").
+				Expect().
+				Status(http.StatusUnauthorized).Body().NotEmpty().Equal("\n")
+		}
+		{
 			e.Builder(func(req *httpexpect.Request) {
 				req.WithHeader("X-Auth-Id", "test")
 			}).GET("/user").

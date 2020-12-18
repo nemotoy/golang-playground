@@ -67,6 +67,7 @@ func (am *authMiddleware) Middleware(next http.Handler) http.Handler {
 		v := r.Header.Get("X-Auth-Id")
 		if v == "" {
 			http.Error(w, "", http.StatusUnauthorized)
+			return
 		}
 		next.ServeHTTP(w, r)
 	})
