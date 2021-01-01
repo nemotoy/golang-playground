@@ -7,6 +7,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.3.3
 	github.com/davecgh/go-spew v1.1.1
 	github.com/gavv/httpexpect/v2 v2.1.0
+	github.com/go-chi/chi v1.5.1
 	github.com/google/go-cmp v0.5.2
 	github.com/google/go-github/v28 v28.1.1
 	github.com/google/wire v0.4.0
