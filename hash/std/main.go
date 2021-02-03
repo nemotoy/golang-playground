@@ -2,10 +2,15 @@ package main
 
 import (
 	"bytes"
+	"crypto/hmac"
 	"crypto/sha256"
+	"crypto/sha512"
 	"encoding"
+	"encoding/hex"
 	"fmt"
 	"log"
+	"strconv"
+	"time"
 )
 
 func main() {
@@ -41,4 +46,14 @@ func main() {
 
 	fmt.Printf("%x\n", first.Sum(nil))
 	fmt.Println(bytes.Equal(first.Sum(nil), second.Sum(nil)))
+
+	// HMAC
+	hash := hmac.New(sha512.New, []byte("myoriginkey"))
+	id := string([]rune(hex.EncodeToString(hash.Sum(nil))))
+	fmt.Printf("%s\n", id)
+	id1 := string([]rune(hex.EncodeToString(hash.Sum(nil)))[0:12])
+	fmt.Printf("%s\n", id1)
+	hash.Write([]byte(strconv.FormatInt(time.Now().UnixNano(), 10)))
+	id2 := string([]rune(hex.EncodeToString(hash.Sum(nil)))[0:12])
+	fmt.Printf("%s\n", id2)
 }
