@@ -7,6 +7,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.3.3
 	github.com/davecgh/go-spew v1.1.1
 	github.com/gavv/httpexpect/v2 v2.1.0
+	github.com/gdamore/tcell v1.3.0 // indirect
 	github.com/go-chi/chi v1.5.1
 	github.com/google/go-cmp v0.5.2
 	github.com/google/go-github/v28 v28.1.1
@@ -18,7 +19,7 @@ require (
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/mitchellh/hashstructure v1.0.0
 	github.com/olekukonko/tablewriter v0.0.4
-	github.com/rivo/tview v0.0.0-20200528200248-fe953220389f
+	github.com/rivo/tview v0.0.0-20210217110421-8a8f78a6dd01
 	github.com/stretchr/testify v1.5.1
 	go.uber.org/goleak v1.0.0
 	go.uber.org/multierr v1.5.0
