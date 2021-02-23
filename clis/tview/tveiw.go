@@ -19,6 +19,8 @@ const (
 	formType  ComponentType = "form"
 	pagesType ComponentType = "pages"
 	modalType ComponentType = "modal"
+	flexType  ComponentType = "flex"
+	gridType  ComponentType = "grid"
 )
 
 func castComponent(s string) ComponentType {
@@ -109,6 +111,47 @@ func main() {
 			})
 		if err := app.SetRoot(modal, false).SetFocus(modal).Run(); err != nil {
 			log.Fatal(err)
+		}
+	case flexType:
+		flex := tview.NewFlex().
+			AddItem(tview.NewBox().SetBorder(true).SetTitle("Left (1/2 x width of Top)"), 0, 1, false).
+			AddItem(tview.NewFlex().SetDirection(tview.FlexRow).
+				AddItem(tview.NewBox().SetBorder(true).SetTitle("Top"), 0, 1, false).
+				AddItem(tview.NewBox().SetBorder(true).SetTitle("Middle (3 x height of Top)"), 0, 3, false).
+				AddItem(tview.NewBox().SetBorder(true).SetTitle("Bottom (5 rows)"), 5, 1, false), 0, 2, false).
+			AddItem(tview.NewBox().SetBorder(true).SetTitle("Right (20 cols)"), 20, 1, false)
+		if err := app.SetRoot(flex, true).SetFocus(flex).Run(); err != nil {
+			panic(err)
+		}
+	case gridType:
+		newPrimitive := func(text string) tview.Primitive {
+			return tview.NewTextView().
+				SetTextAlign(tview.AlignCenter).
+				SetText(text)
+		}
+		menu := newPrimitive("Menu")
+		main := newPrimitive("Main content")
+		sideBar := newPrimitive("Side Bar")
+
+		grid := tview.NewGrid().
+			SetRows(3, 0, 3).
+			SetColumns(30, 0, 30).
+			SetBorders(true).
+			AddItem(newPrimitive("Header"), 0, 0, 1, 3, 0, 0, false).
+			AddItem(newPrimitive("Footer"), 2, 0, 1, 3, 0, 0, false)
+
+		// Layout for screens narrower than 100 cells (menu and side bar are hidden).
+		grid.AddItem(menu, 0, 0, 0, 0, 0, 0, false).
+			AddItem(main, 1, 0, 1, 3, 0, 0, false).
+			AddItem(sideBar, 0, 0, 0, 0, 0, 0, false)
+
+		// Layout for screens wider than 100 cells.
+		grid.AddItem(menu, 1, 0, 1, 1, 0, 100, false).
+			AddItem(main, 1, 1, 1, 1, 0, 100, false).
+			AddItem(sideBar, 1, 2, 1, 1, 0, 100, false)
+
+		if err := app.SetRoot(grid, true).SetFocus(grid).Run(); err != nil {
+			panic(err)
 		}
 	default:
 		log.Printf("given component type is invalid: %s", ct)
