@@ -46,6 +46,8 @@ func main() {
 			app.Stop()
 		})
 
+	listItems.AddItem("focus", "", 'f', func() { app.SetFocus(actionItems) })
+
 	grid := tview.NewGrid().
 		SetRows(3, 0, 3).
 		SetColumns(30, 0, 30).
