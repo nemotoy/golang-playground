@@ -37,17 +37,23 @@ func main() {
 	for _, v := range sources {
 		listItems.AddItem(v.name, v.URL, '0', nil)
 	}
-	listItems.AddItem("Quit", "Press to exit", 'q', func() {
-		app.Stop()
-	})
+
+	actionItems := tview.NewList().
+		AddItem("Focus", "Press to focus", 'f', func() {
+			app.SetFocus(listItems)
+		}).
+		AddItem("Quit", "Press to exit", 'q', func() {
+			app.Stop()
+		})
 
 	grid := tview.NewGrid().
 		SetRows(3, 0, 3).
 		SetColumns(30, 0, 30).
 		SetBorders(true).
-		AddItem(listItems, 1, 1, 1, 1, 0, 100, false)
+		AddItem(listItems, 1, 0, 1, 3, 0, 100, false).
+		AddItem(actionItems, 2, 0, 1, 3, 0, 100, false)
 
-	app.SetRoot(grid, true).SetFocus(listItems)
+	app.SetRoot(grid, true).SetFocus(actionItems)
 
 	if err := app.Run(); err != nil {
 		panic(err)
