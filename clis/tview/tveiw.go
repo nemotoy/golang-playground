@@ -130,8 +130,16 @@ func main() {
 				SetText(text)
 		}
 		menu := newPrimitive("Menu")
-		main := newPrimitive("Main content")
+		// main := newPrimitive("Main content")
 		sideBar := newPrimitive("Side Bar")
+		listItems := tview.NewList().
+			AddItem("List item 1", "Some explanatory text", 'a', nil).
+			AddItem("List item 2", "Some explanatory text", 'b', nil).
+			AddItem("List item 3", "Some explanatory text", 'c', nil).
+			AddItem("List item 4", "Some explanatory text", 'd', nil).
+			AddItem("Quit", "Press to exit", 'q', func() {
+				app.Stop()
+			})
 
 		grid := tview.NewGrid().
 			SetRows(3, 0, 3).
@@ -140,17 +148,20 @@ func main() {
 			AddItem(newPrimitive("Header"), 0, 0, 1, 3, 0, 0, false).
 			AddItem(newPrimitive("Footer"), 2, 0, 1, 3, 0, 0, false)
 
-		// Layout for screens narrower than 100 cells (menu and side bar are hidden).
-		grid.AddItem(menu, 0, 0, 0, 0, 0, 0, false).
-			AddItem(main, 1, 0, 1, 3, 0, 0, false).
-			AddItem(sideBar, 0, 0, 0, 0, 0, 0, false)
+		// // Layout for screens narrower than 100 cells (menu and side bar are hidden).
+		// grid.AddItem(menu, 0, 0, 0, 0, 0, 0, false).
+		// 	AddItem(main, 1, 0, 1, 3, 0, 0, false).
+		// 	AddItem(sideBar, 0, 0, 0, 0, 0, 0, false)
 
 		// Layout for screens wider than 100 cells.
 		grid.AddItem(menu, 1, 0, 1, 1, 0, 100, false).
-			AddItem(main, 1, 1, 1, 1, 0, 100, false).
+			AddItem(listItems, 1, 1, 1, 1, 0, 100, false).
 			AddItem(sideBar, 1, 2, 1, 1, 0, 100, false)
 
-		if err := app.SetRoot(grid, true).SetFocus(grid).Run(); err != nil {
+		app.SetRoot(grid, true)
+		app.SetFocus(listItems)
+
+		if err := app.Run(); err != nil {
 			panic(err)
 		}
 	default:
