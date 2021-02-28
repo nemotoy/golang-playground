@@ -11,21 +11,10 @@ import (
 
 // represents User object.
 type user struct {
-	Name           githubv4.String
-	CommitComments struct {
-		Nodes []commitComment
-	} `graphql:"commitComments(last: $commitCommentsLast)"`
+	Name                githubv4.String
 	StarredRepositories struct {
 		Nodes []repository
 	} `graphql:"starredRepositories(last: $starredRepositoriesLast)"`
-}
-
-// represents CommitComment object.
-type commitComment struct {
-	URL         githubv4.URI
-	PublishedAt githubv4.DateTime
-	CreatedAt   githubv4.DateTime
-	UpdatedAt   githubv4.DateTime
 }
 
 // represents Repository object.
@@ -51,7 +40,6 @@ func main() {
 
 	variables := map[string]interface{}{
 		"followingLast":           githubv4.Int(5),
-		"commitCommentsLast":      githubv4.Int(5),
 		"starredRepositoriesLast": githubv4.Int(5),
 	}
 
@@ -61,6 +49,9 @@ func main() {
 		os.Exit(1)
 	}
 	for _, v := range query.Viewer.Following.Nodes {
-		fmt.Printf("name: %s, commits: %+v, starred: %+v\n", v.Name, v.CommitComments, v.StarredRepositories)
+		fmt.Printf("name: %s, edges:\n", v.Name, v.StarredRepositories.Edges)
+		for _, st := range v.StarredRepositories.Nodes {
+			fmt.Printf("URL: %s\n", st.URL)
+		}
 	}
 }
