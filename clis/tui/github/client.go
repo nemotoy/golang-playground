@@ -9,6 +9,30 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// represents User object.
+type user struct {
+	Name           githubv4.String
+	CommitComments struct {
+		Nodes []commitComment
+	} `graphql:"commitComments(last: 5)"`
+	StarredRepositories struct {
+		Nodes []repository
+	} `graphql:"starredRepositories(last: 5)"`
+}
+
+// represents CommitComment object.
+type commitComment struct {
+	URL         githubv4.URI
+	PublishedAt githubv4.DateTime
+	CreatedAt   githubv4.DateTime
+	UpdatedAt   githubv4.DateTime
+}
+
+// represents Repository object.
+type repository struct {
+	URL githubv4.URI
+}
+
 func main() {
 	src := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: os.Getenv("GITHUB_TOKEN")},
@@ -19,27 +43,8 @@ func main() {
 
 	var query struct {
 		Viewer struct {
-			Name      githubv4.String
 			Following struct {
-				Nodes []struct {
-					Name           githubv4.String
-					CommitComments struct {
-						Nodes []struct {
-							URL         githubv4.URI
-							PublishedAt githubv4.DateTime
-							CreatedAt   githubv4.DateTime
-							UpdatedAt   githubv4.DateTime
-						}
-					} `graphql:"commitComments(last: 5)"`
-					StarredRepositories struct {
-						Edges []struct {
-							StarredAt githubv4.DateTime
-						}
-						Nodes []struct {
-							URL githubv4.URI
-						}
-					} `graphql:"starredRepositories(last: 5)"`
-				}
+				Nodes []user
 			} `graphql:"following(last: 5)"`
 		}
 	}
