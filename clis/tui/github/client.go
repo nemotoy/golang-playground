@@ -31,6 +31,14 @@ func main() {
 							UpdatedAt   githubv4.DateTime
 						}
 					} `graphql:"commitComments(last: 5)"`
+					StarredRepositories struct {
+						Edges []struct {
+							StarredAt githubv4.DateTime
+						}
+						Nodes []struct {
+							URL githubv4.URI
+						}
+					} `graphql:"starredRepositories(last: 5)"`
 				}
 			} `graphql:"following(last: 5)"`
 		}
@@ -42,6 +50,6 @@ func main() {
 		os.Exit(1)
 	}
 	for _, v := range query.Viewer.Following.Nodes {
-		fmt.Printf("Name: %s, Commits: %+v\n", v.Name, v.CommitComments)
+		fmt.Printf("name: %s, commits: %+v, starred: %+v\n", v.Name, v.CommitComments, v.StarredRepositories)
 	}
 }
