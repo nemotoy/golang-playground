@@ -20,11 +20,14 @@ require (
 	github.com/mitchellh/hashstructure v1.0.0
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/rivo/tview v0.0.0-20210217110421-8a8f78a6dd01
+	github.com/shurcooL/githubv4 v0.0.0-20201206200315-234843c633fa
+	github.com/shurcooL/graphql v0.0.0-20200928012149-18c5c3165e3a // indirect
 	github.com/stretchr/testify v1.5.1
 	go.uber.org/goleak v1.0.0
 	go.uber.org/multierr v1.5.0
 	go.uber.org/zap v1.16.0
-	golang.org/x/net v0.0.0-20200822124328-c89045814202
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
+	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0
 	google.golang.org/api v0.31.0
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
