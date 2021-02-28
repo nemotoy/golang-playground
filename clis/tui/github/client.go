@@ -16,6 +16,9 @@ type user struct {
 		Edges []starredRepositoritoryEdge
 		Nodes []repository
 	} `graphql:"starredRepositories(last: $starredRepositoriesLast)"`
+	TopRepositories struct {
+		Nodes []repository
+	} `graphql:"topRepositories(last: $topRepositoriesLast, orderBy: {field: CREATED_AT, direction: ASC})"`
 }
 
 // represents StarredRepositoryEdge object.
@@ -47,6 +50,8 @@ func main() {
 	variables := map[string]interface{}{
 		"followingLast":           githubv4.Int(5),
 		"starredRepositoriesLast": githubv4.Int(5),
+		"topRepositoriesLast":     githubv4.Int(5),
+		// "topRepositoriesOrderBy":  githubv4.Int(5),
 	}
 
 	err := client.Query(context.Background(), &query, variables)
@@ -58,6 +63,9 @@ func main() {
 		fmt.Printf("name: %s, edges:%+v\n", v.Name, v.StarredRepositories.Edges)
 		for _, st := range v.StarredRepositories.Nodes {
 			fmt.Printf("URL: %s\n", st.URL)
+		}
+		for _, tr := range v.TopRepositories.Nodes {
+			fmt.Printf("URL: %+v\n", tr)
 		}
 	}
 }
