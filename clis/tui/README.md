@@ -28,6 +28,7 @@
 - v3 https://github.com/google/go-github/
 - v4 https://github.com/shurcooL/githubv4/
   - https://docs.github.com/en/graphql/overview/explorer
+  - https://docs.github.com/ja/graphql/guides/introduction-to-graphql
 
 parent(repository) -> field(issue) -> field(comments) -> ...
 
