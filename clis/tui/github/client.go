@@ -14,10 +14,10 @@ type user struct {
 	Name           githubv4.String
 	CommitComments struct {
 		Nodes []commitComment
-	} `graphql:"commitComments(last: 5)"`
+	} `graphql:"commitComments(last: $commitCommentsLast)"`
 	StarredRepositories struct {
 		Nodes []repository
-	} `graphql:"starredRepositories(last: 5)"`
+	} `graphql:"starredRepositories(last: $starredRepositoriesLast)"`
 }
 
 // represents CommitComment object.
@@ -45,11 +45,17 @@ func main() {
 		Viewer struct {
 			Following struct {
 				Nodes []user
-			} `graphql:"following(last: 5)"`
+			} `graphql:"following(last: $followingLast)"`
 		}
 	}
 
-	err := client.Query(context.Background(), &query, nil)
+	variables := map[string]interface{}{
+		"followingLast":           githubv4.Int(5),
+		"commitCommentsLast":      githubv4.Int(5),
+		"starredRepositoriesLast": githubv4.Int(5),
+	}
+
+	err := client.Query(context.Background(), &query, variables)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
