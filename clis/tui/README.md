@@ -58,3 +58,10 @@ variables := map[string]interface{}{
 
 - root: https://docs.github.com/en/graphql/reference/queries
 - resources: https://docs.github.com/en/graphql/reference/objects
+
+---
+
+## GraphQL
+
+- 深いネストの取り扱い
+- 上から下への依存度
