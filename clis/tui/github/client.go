@@ -17,9 +17,6 @@ type user struct {
 		Edges []starredRepositoritoryEdge
 		Nodes []repository
 	} `graphql:"starredRepositories(last: $starredRepositoriesLast)"`
-	TopRepositories struct {
-		Nodes []repository
-	} `graphql:"topRepositories(last: $topRepositoriesLast, orderBy: {field: CREATED_AT, direction: ASC})"`
 	ContributionsCollection struct {
 		CommitContributionsByRepository []commitContributionsByRepository
 		TotalCommitContributions        githubv4.Int
@@ -110,7 +107,6 @@ func main() {
 	variables := map[string]interface{}{
 		"followingLast":               githubv4.Int(5),
 		"starredRepositoriesLast":     githubv4.Int(5),
-		"topRepositoriesLast":         githubv4.Int(5),
 		"contributionsCollectionFrom": githubv4.DateTime(from),
 		"contributionsCollectionTo":   githubv4.DateTime(to),
 	}
