@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
@@ -19,6 +20,11 @@ type user struct {
 	TopRepositories struct {
 		Nodes []repository
 	} `graphql:"topRepositories(last: $topRepositoriesLast, orderBy: {field: CREATED_AT, direction: ASC})"`
+	ContributionsCollection struct {
+		TotalCommitContributions      githubv4.Int
+		TotalIssueContributions       githubv4.Int
+		TotalPullRequestContributions githubv4.Int
+	} `graphql:"contributionsCollection(from: $contributionsCollectionFrom, to: $contributionsCollectionTo)"`
 }
 
 // represents StarredRepositoryEdge object.
@@ -39,6 +45,10 @@ func main() {
 
 	client := githubv4.NewClient(httpClient)
 
+	// todo:
+	// - commits
+	// - starred
+	// - following
 	var query struct {
 		Viewer struct {
 			Following struct {
@@ -47,11 +57,13 @@ func main() {
 		}
 	}
 
+	now := time.Now()
 	variables := map[string]interface{}{
-		"followingLast":           githubv4.Int(5),
-		"starredRepositoriesLast": githubv4.Int(5),
-		"topRepositoriesLast":     githubv4.Int(5),
-		// "topRepositoriesOrderBy":  githubv4.Int(5),
+		"followingLast":               githubv4.Int(5),
+		"starredRepositoriesLast":     githubv4.Int(5),
+		"topRepositoriesLast":         githubv4.Int(5),
+		"contributionsCollectionFrom": githubv4.DateTime{now.Add(-24 * time.Hour)},
+		"contributionsCollectionTo":   githubv4.DateTime{now},
 	}
 
 	err := client.Query(context.Background(), &query, variables)
@@ -67,5 +79,6 @@ func main() {
 		for _, tr := range v.TopRepositories.Nodes {
 			fmt.Printf("URL: %+v\n", tr)
 		}
+		fmt.Printf("Contribution count: %+v\n", v.ContributionsCollection)
 	}
 }
