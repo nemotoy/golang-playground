@@ -87,8 +87,12 @@ func main() {
 
 	client := githubv4.NewClient(httpClient)
 
-	// todo:
+	// user activities
 	// - commit
+	//   - language
+	//   - commit url
+	//   - repo name
+	//   - created_at
 	// - starred
 	// - following
 	var query struct {
