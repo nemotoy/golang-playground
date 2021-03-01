@@ -56,11 +56,26 @@ type repositoryPerCommit struct {
 	Languages struct {
 		Nodes []language
 	} `graphql:"languages(last:10)"`
+	PullRequests struct {
+		Nodes []pullRequest
+	} `graphql:"pullRequests(last:10)"`
 }
 
 type language struct {
 	Color githubv4.String
 	Name  githubv4.String
+}
+
+type pullRequest struct {
+	Commits struct {
+		Nodes []pullRequestCommit
+	} `graphql:"commits(last:10)"`
+}
+
+type pullRequestCommit struct {
+	Commit struct {
+		CommitUrl githubv4.URI
+	}
 }
 
 func main() {
@@ -72,7 +87,7 @@ func main() {
 	client := githubv4.NewClient(httpClient)
 
 	// todo:
-	// - commits
+	// - commit
 	// - starred
 	// - following
 	var query struct {
@@ -106,7 +121,6 @@ func main() {
 		for _, tr := range v.TopRepositories.Nodes {
 			fmt.Printf("URL: %+v\n", tr)
 		}
-		fmt.Printf("Contribution count: %+v\n", v.ContributionsCollection)
 		fmt.Printf("Commit contribution: %+v\n", v.ContributionsCollection.CommitContributionsByRepository)
 		fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
 	}
