@@ -99,13 +99,16 @@ func main() {
 		}
 	}
 
+	var from, to struct{ time.Time }
 	now := time.Now()
+	from.Time = now.Add(-24 * time.Hour)
+	to.Time = now
 	variables := map[string]interface{}{
 		"followingLast":               githubv4.Int(5),
 		"starredRepositoriesLast":     githubv4.Int(5),
 		"topRepositoriesLast":         githubv4.Int(5),
-		"contributionsCollectionFrom": githubv4.DateTime{now.Add(-24 * time.Hour)},
-		"contributionsCollectionTo":   githubv4.DateTime{now},
+		"contributionsCollectionFrom": githubv4.DateTime(from),
+		"contributionsCollectionTo":   githubv4.DateTime(to),
 	}
 
 	err := client.Query(context.Background(), &query, variables)
