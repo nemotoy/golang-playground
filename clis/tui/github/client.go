@@ -74,7 +74,8 @@ type pullRequest struct {
 
 type pullRequestCommit struct {
 	Commit struct {
-		CommitUrl githubv4.URI
+		CommitUrl     githubv4.URI
+		CommittedDate githubv4.DateTime
 	}
 }
 
@@ -114,14 +115,17 @@ func main() {
 	}
 	for _, v := range query.Viewer.Following.Nodes {
 		fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
-		fmt.Printf("name: %s, edges:%+v\n", v.Name, v.StarredRepositories.Edges)
+		fmt.Printf("name: %s\n", v.Name)
+		fmt.Println("- Starred repositories")
 		for _, st := range v.StarredRepositories.Nodes {
 			fmt.Printf("URL: %s\n", st.URL)
 		}
-		for _, tr := range v.TopRepositories.Nodes {
-			fmt.Printf("URL: %+v\n", tr)
+		fmt.Println("- Commits")
+		for _, ccr := range v.ContributionsCollection.CommitContributionsByRepository {
+			for _, c := range ccr.Contributions.Nodes {
+				fmt.Printf("%+v\n", c.Repository.PullRequests.Nodes)
+			}
 		}
-		fmt.Printf("Commit contribution: %+v\n", v.ContributionsCollection.CommitContributionsByRepository)
 		fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
 	}
 }
