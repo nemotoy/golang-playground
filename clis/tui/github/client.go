@@ -125,8 +125,10 @@ func main() {
 		}
 		fmt.Println("- Commits")
 		for _, ccr := range v.ContributionsCollection.CommitContributionsByRepository {
-			for _, c := range ccr.Contributions.Nodes {
-				fmt.Printf("%+v\n", c.Repository.PullRequests.Nodes)
+			for _, cn := range ccr.Contributions.Nodes {
+				for _, p := range cn.Repository.PullRequests.Nodes {
+					fmt.Printf("language: %+v, commits: %+v\n", cn.Repository.Languages, p.Commits.Nodes)
+				}
 			}
 		}
 		fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
