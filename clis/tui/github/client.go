@@ -32,7 +32,10 @@ type starredRepositoritoryEdge struct {
 
 // represents Repository object.
 type repository struct {
-	URL githubv4.URI
+	URL       githubv4.URI
+	Languages struct {
+		Nodes []language
+	} `graphql:"languages(last:10)"`
 }
 
 type commitContributionsByRepository struct {
@@ -121,7 +124,7 @@ func main() {
 		fmt.Printf("name: %s\n", v.Name)
 		fmt.Println("- Starred repositories")
 		for _, st := range v.StarredRepositories.Nodes {
-			fmt.Printf("URL: %s\n", st.URL)
+			fmt.Printf("Languages: %+v, URL: %s\n", st.Languages, st.URL)
 		}
 		fmt.Println("- Commits")
 		for _, ccr := range v.ContributionsCollection.CommitContributionsByRepository {
