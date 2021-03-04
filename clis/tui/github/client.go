@@ -17,12 +17,12 @@ type user struct {
 		Edges []starredRepositoritoryEdge
 		Nodes []repository
 	} `graphql:"starredRepositories(last: $starredRepositoriesLast)"`
-	ContributionsCollection struct {
-		CommitContributionsByRepository []commitContributionsByRepository
-		TotalCommitContributions        githubv4.Int
-		TotalIssueContributions         githubv4.Int
-		TotalPullRequestContributions   githubv4.Int
-	} `graphql:"contributionsCollection(from: $contributionsCollectionFrom, to: $contributionsCollectionTo)"`
+	// ContributionsCollection struct {
+	// 	CommitContributionsByRepository []commitContributionsByRepository
+	// 	TotalCommitContributions        githubv4.Int
+	// 	TotalIssueContributions         githubv4.Int
+	// 	TotalPullRequestContributions   githubv4.Int
+	// } `graphql:"contributionsCollection(from: $contributionsCollectionFrom, to: $contributionsCollectionTo)"`
 }
 
 // represents StarredRepositoryEdge object.
@@ -32,10 +32,15 @@ type starredRepositoritoryEdge struct {
 
 // represents Repository object.
 type repository struct {
-	URL       githubv4.URI
+	URL githubv4.URI
+	// https://docs.github.com/en/graphql/reference/input-objects#languageorder
 	Languages struct {
 		Nodes []language
 	} `graphql:"languages(last:10)"`
+	PrimaryLanguage struct {
+		Color githubv4.String
+		Name  githubv4.String
+	}
 }
 
 type commitContributionsByRepository struct {
@@ -108,10 +113,10 @@ func main() {
 	from.Time = now.Add(-24 * time.Hour)
 	to.Time = now
 	variables := map[string]interface{}{
-		"followingLast":               githubv4.Int(5),
-		"starredRepositoriesLast":     githubv4.Int(5),
-		"contributionsCollectionFrom": githubv4.DateTime(from),
-		"contributionsCollectionTo":   githubv4.DateTime(to),
+		"followingLast":           githubv4.Int(5),
+		"starredRepositoriesLast": githubv4.Int(5),
+		// "contributionsCollectionFrom": githubv4.DateTime(from),
+		// "contributionsCollectionTo":   githubv4.DateTime(to),
 	}
 
 	err := client.Query(context.Background(), &query, variables)
@@ -122,18 +127,19 @@ func main() {
 	for _, v := range query.Viewer.Following.Nodes {
 		fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
 		fmt.Printf("name: %s\n", v.Name)
-		fmt.Println("- Starred repositories")
-		for _, st := range v.StarredRepositories.Nodes {
-			fmt.Printf("Languages: %+v, URL: %s\n", st.Languages, st.URL)
+		fmt.Println("Starred repositories: ")
+		for i, st := range v.StarredRepositories.Nodes {
+			// length of edges equal nodes
+			fmt.Printf("StarredAt: %v, Languages: %s, URL: %s\n", v.StarredRepositories.Edges[i].StarredAt, st.PrimaryLanguage.Name, st.URL)
 		}
-		fmt.Println("- Commits")
-		for _, ccr := range v.ContributionsCollection.CommitContributionsByRepository {
-			for _, cn := range ccr.Contributions.Nodes {
-				for _, p := range cn.Repository.PullRequests.Nodes {
-					fmt.Printf("language: %+v, commits: %+v\n", cn.Repository.Languages, p.Commits.Nodes)
-				}
-			}
-		}
+		// fmt.Println("- Commits")
+		// for _, ccr := range v.ContributionsCollection.CommitContributionsByRepository {
+		// 	for _, cn := range ccr.Contributions.Nodes {
+		// 		for _, p := range cn.Repository.PullRequests.Nodes {
+		// 			fmt.Printf("language: %+v, commits: %+v\n", cn.Repository.Languages, p.Commits.Nodes)
+		// 		}
+		// 	}
+		// }
 		fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
 	}
 }
