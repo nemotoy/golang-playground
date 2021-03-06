@@ -37,6 +37,7 @@ func main() {
 		SetBorders(false)
 	rows := len(sources)
 	for r := 0; r < rows; r++ {
+		// func setCell([]struct){}
 		data := sources[r]
 		table.SetCell(r, 0,
 			tview.NewTableCell(fmt.Sprint(data.ID)).
