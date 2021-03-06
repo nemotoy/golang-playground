@@ -6,9 +6,9 @@
 	- main view
 		- layout
 	- content view
-- user actiion
+- user action
   - key binding
-  - change forcus each items(want apply action all views)
+  - change forcus each items(want apply action all primitives)
 - data source
   - initial
   - refresh(concurrency)
