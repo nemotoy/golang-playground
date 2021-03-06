@@ -23,16 +23,19 @@ type source struct {
 
 // nolint:gocyclo
 func main() {
+	// flag
 	flag.Parse()
 	flag.Usage = usage
 
-	app := tview.NewApplication()
-
+	// fetch data
 	sources := []source{
 		{1, "Go", "https://golang.org/"},
 		{2, "Rust", "https://www.rust-lang.org/"},
 		{3, "Kotlin", "https://kotlinlang.org/"},
 	}
+
+	// new tview app
+	app := tview.NewApplication()
 
 	table := tview.NewTable().
 		SetBorders(false)
@@ -45,6 +48,7 @@ func main() {
 			// restrict selectable clumns and add donefunc
 		}
 	})
+	// new layout
 	rows := len(sources)
 	for r := 0; r < rows; r++ {
 		data := sources[r]
@@ -67,6 +71,7 @@ func main() {
 			app.Stop()
 		})
 
+	// new layout
 	grid := tview.NewGrid().
 		SetRows(3, 0, 3).
 		SetColumns(30, 0, 30).
@@ -74,9 +79,7 @@ func main() {
 		AddItem(table, 1, 0, 1, 3, 0, 100, false).
 		AddItem(actionItems, 2, 0, 1, 3, 0, 100, false)
 
-	app.SetRoot(grid, true).SetFocus(actionItems)
-
-	if err := app.Run(); err != nil {
+	if err := app.SetRoot(grid, true).SetFocus(actionItems).Run(); err != nil {
 		panic(err)
 	}
 }
