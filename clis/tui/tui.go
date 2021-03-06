@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
@@ -35,9 +36,17 @@ func main() {
 
 	table := tview.NewTable().
 		SetBorders(false)
+	table.SetDoneFunc(func(key tcell.Key) {
+		switch key {
+		case tcell.KeyEscape:
+			app.Stop()
+		case tcell.KeyEnter:
+			table.SetSelectable(true, true)
+			// restrict selectable clumns and add donefunc
+		}
+	})
 	rows := len(sources)
 	for r := 0; r < rows; r++ {
-		// func setCell([]struct){}
 		data := sources[r]
 		table.SetCell(r, 0,
 			tview.NewTableCell(fmt.Sprint(data.ID)).
