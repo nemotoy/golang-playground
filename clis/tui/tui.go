@@ -16,9 +16,9 @@ func usage() {
 }
 
 type source struct {
-	ID   int
-	Name string
-	URL  string
+	ID       int
+	Language string
+	URL      string
 }
 
 // nolint:gocyclo
@@ -37,8 +37,10 @@ func main() {
 	// new tview app
 	app := tview.NewApplication()
 
+	// new table
 	table := tview.NewTable().
-		SetBorders(false)
+		SetBorders(false).
+		SetFixed(1, 1)
 	table.SetDoneFunc(func(key tcell.Key) {
 		switch key {
 		case tcell.KeyEscape:
@@ -48,15 +50,25 @@ func main() {
 			// restrict selectable clumns and add donefunc
 		}
 	})
-	// new layout
+	// add frame(row 0)
+	table.SetCell(0, 0,
+		tview.NewTableCell("ID").
+			SetAlign(tview.AlignLeft))
+	table.SetCell(0, 1,
+		tview.NewTableCell("Language").
+			SetAlign(tview.AlignLeft))
+	table.SetCell(0, 2,
+		tview.NewTableCell("URL").
+			SetAlign(tview.AlignLeft))
+	// add new layout
 	rows := len(sources)
-	for r := 0; r < rows; r++ {
-		data := sources[r]
+	for r := 1; r <= rows; r++ {
+		data := sources[r-1]
 		table.SetCell(r, 0,
 			tview.NewTableCell(fmt.Sprint(data.ID)).
 				SetAlign(tview.AlignLeft))
 		table.SetCell(r, 1,
-			tview.NewTableCell(fmt.Sprint(data.Name)).
+			tview.NewTableCell(fmt.Sprint(data.Language)).
 				SetAlign(tview.AlignLeft))
 		table.SetCell(r, 2,
 			tview.NewTableCell(fmt.Sprint(data.URL)).
