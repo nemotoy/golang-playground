@@ -16,7 +16,7 @@ func usage() {
 
 type source struct {
 	ID   int
-	name string
+	Name string
 	URL  string
 }
 
@@ -33,26 +33,35 @@ func main() {
 		{3, "Kotlin", "https://kotlinlang.org/"},
 	}
 
-	listItems := tview.NewList()
-	for _, v := range sources {
-		listItems.AddItem(v.name, v.URL, '0', nil)
+	table := tview.NewTable().
+		SetBorders(false)
+	rows := len(sources)
+	for r := 0; r < rows; r++ {
+		data := sources[r]
+		table.SetCell(r, 0,
+			tview.NewTableCell(fmt.Sprint(data.ID)).
+				SetAlign(tview.AlignLeft))
+		table.SetCell(r, 1,
+			tview.NewTableCell(fmt.Sprint(data.Name)).
+				SetAlign(tview.AlignLeft))
+		table.SetCell(r, 2,
+			tview.NewTableCell(fmt.Sprint(data.URL)).
+				SetAlign(tview.AlignLeft))
 	}
 
 	actionItems := tview.NewList().
 		AddItem("Focus", "Press to focus", 'f', func() {
-			app.SetFocus(listItems)
+			app.SetFocus(table)
 		}).
 		AddItem("Quit", "Press to exit", 'q', func() {
 			app.Stop()
 		})
 
-	listItems.AddItem("focus", "", 'f', func() { app.SetFocus(actionItems) })
-
 	grid := tview.NewGrid().
 		SetRows(3, 0, 3).
 		SetColumns(30, 0, 30).
 		SetBorders(true).
-		AddItem(listItems, 1, 0, 1, 3, 0, 100, false).
+		AddItem(table, 1, 0, 1, 3, 0, 100, false).
 		AddItem(actionItems, 2, 0, 1, 3, 0, 100, false)
 
 	app.SetRoot(grid, true).SetFocus(actionItems)
