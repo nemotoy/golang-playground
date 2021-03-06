@@ -2,15 +2,16 @@
 
 ## TODO
 
-- main view
-  - coordinate
-- content view
+- view
+	- main view
+		- layout
+	- content view
 - user actiion
   - key binding
   - change forcus each items(want apply action all views)
 - data source
   - initial
-  - refresh
+  - refresh(concurrency)
 - colors
 
 ## doc
