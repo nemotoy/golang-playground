@@ -23,15 +23,14 @@ type source struct {
 
 // nolint:gocyclo
 func main() {
-	// flag
+	// parse flags
 	flag.Parse()
 	flag.Usage = usage
 
 	// fetch data
-	sources := []source{
-		{1, "Go", "https://golang.org/"},
-		{2, "Rust", "https://www.rust-lang.org/"},
-		{3, "Kotlin", "https://kotlinlang.org/"},
+	sources := []source{}
+	for i := 1; i <= 50; i++ {
+		sources = append(sources, source{ID: i, Language: "lang", URL: "https://example.org"})
 	}
 
 	// new tview app
@@ -47,7 +46,6 @@ func main() {
 			app.Stop()
 		case tcell.KeyEnter:
 			table.SetSelectable(true, true)
-			// restrict selectable clumns and add donefunc
 		}
 	})
 	// add frame(row 0)
@@ -74,12 +72,18 @@ func main() {
 			tview.NewTableCell(fmt.Sprint(data.URL)).
 				SetAlign(tview.AlignLeft))
 	}
-
+	// new action fields
 	actionItems := tview.NewList().
-		AddItem("Focus", "Press to focus", 'f', func() {
+		AddItem("Scroll beginning table", "", 'b', func() {
+			table.ScrollToBeginning()
+		}).
+		AddItem("Scroll end table", "", 'e', func() {
+			table.ScrollToEnd()
+		}).
+		AddItem("Focus", "", 'f', func() {
 			app.SetFocus(table)
 		}).
-		AddItem("Quit", "Press to exit", 'q', func() {
+		AddItem("Quit", "", 'q', func() {
 			app.Stop()
 		})
 
