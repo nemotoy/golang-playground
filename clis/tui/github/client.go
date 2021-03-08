@@ -41,6 +41,7 @@ type repository struct {
 		Color githubv4.String
 		Name  githubv4.String
 	}
+	StargazerCount githubv4.Int
 }
 
 type commitContributionsByRepository struct {
@@ -130,7 +131,7 @@ func main() {
 		fmt.Println("Starred repositories: ")
 		for i, st := range v.StarredRepositories.Nodes {
 			// length of edges equal nodes
-			fmt.Printf("StarredAt: %v, Languages: %s, URL: %s\n", v.StarredRepositories.Edges[i].StarredAt, st.PrimaryLanguage.Name, st.URL)
+			fmt.Printf("StarredAt: %v, Languages: %s, , Count: %d, URL: %s\n", v.StarredRepositories.Edges[i].StarredAt, st.PrimaryLanguage.Name, st.StargazerCount, st.URL)
 		}
 		// fmt.Println("- Commits")
 		// for _, ccr := range v.ContributionsCollection.CommitContributionsByRepository {
