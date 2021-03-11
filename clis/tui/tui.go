@@ -29,7 +29,7 @@ func main() {
 
 	// fetch data
 	sources := []source{}
-	for i := 1; i <= 50; i++ {
+	for i := 1; i <= 10; i++ {
 		sources = append(sources, source{ID: i, Language: "lang", URL: "https://example.org"})
 	}
 
@@ -49,26 +49,26 @@ func main() {
 		}
 	})
 	// add frame(row 0)
-	table.SetCell(0, 0,
+	table.SetCell(0, 1,
 		tview.NewTableCell("ID").
 			SetAlign(tview.AlignLeft))
-	table.SetCell(0, 1,
+	table.SetCell(0, 2,
 		tview.NewTableCell("Language").
 			SetAlign(tview.AlignLeft))
-	table.SetCell(0, 2,
+	table.SetCell(0, 3,
 		tview.NewTableCell("URL").
 			SetAlign(tview.AlignLeft))
 	// add new layout
 	rows := len(sources)
 	for r := 1; r <= rows; r++ {
 		data := sources[r-1]
-		table.SetCell(r, 0,
+		table.SetCell(r, 1,
 			tview.NewTableCell(fmt.Sprint(data.ID)).
 				SetAlign(tview.AlignLeft))
-		table.SetCell(r, 1,
+		table.SetCell(r, 2,
 			tview.NewTableCell(fmt.Sprint(data.Language)).
 				SetAlign(tview.AlignLeft))
-		table.SetCell(r, 2,
+		table.SetCell(r, 3,
 			tview.NewTableCell(fmt.Sprint(data.URL)).
 				SetAlign(tview.AlignLeft))
 	}
