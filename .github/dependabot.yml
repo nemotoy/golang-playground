@@ -1,10 +1,10 @@
 version: 2
 updates:
-  - package-ecosystem: "gomod"
+  # - package-ecosystem: "gomod"
     directory: "/"
     labels:
       - "dependencies"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
       time: "09:00"
