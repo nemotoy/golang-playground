@@ -11,7 +11,7 @@ require (
 	github.com/go-chi/chi v1.5.4
 	github.com/google/go-cmp v0.5.2
 	github.com/google/go-github/v28 v28.1.1
-	github.com/google/wire v0.4.0
+	github.com/google/wire v0.5.0
 	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/websocket v1.4.2
 	github.com/graphql-go/graphql v0.7.9
