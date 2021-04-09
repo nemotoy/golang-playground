@@ -18,7 +18,7 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
-	github.com/mitchellh/hashstructure v1.0.0
+	github.com/mitchellh/hashstructure v1.1.0
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/rivo/tview v0.0.0-20210217110421-8a8f78a6dd01
 	github.com/shurcooL/githubv4 v0.0.0-20201206200315-234843c633fa
