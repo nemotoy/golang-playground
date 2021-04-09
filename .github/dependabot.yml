@@ -4,14 +4,14 @@ updates:
     directory: "/"
     labels:
       - "dependencies"
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 3
     schedule:
       interval: "weekly"
       time: "09:00"
       timezone: "Asia/Tokyo"
     target-branch: "master"
   - package-ecosystem: "docker"
-    directory: "/build/"
+    directory: "/build"
     labels:
       - "dependencies"
     open-pull-requests-limit: 0
