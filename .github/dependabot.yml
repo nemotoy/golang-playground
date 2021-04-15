@@ -14,7 +14,7 @@ updates:
     directory: "/build"
     labels:
       - "dependencies"
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 1
     schedule:
       interval: "weekly"
       time: "09:00"
