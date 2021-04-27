@@ -1,6 +1,7 @@
 package ips
 
 import (
+	"fmt"
 	"net"
 	"testing"
 )
@@ -13,14 +14,13 @@ func TestParseIp(t *testing.T) {
 		{"test", false},
 		{"test/test", false},
 		{"test.test.test", false},
-		{"192.0000.0000.0000", false},
 		{"192.168.5.1", true},
 		{"127.0.0.1/32", true},
-		{"0000:0000:0000:0000:0000:ffff:7f00:0001", true},
+		{"2001:db8::/32", true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.ip, func(t *testing.T) {
-			if isIP(tt.ip) == tt.want {
+			if isIP(tt.ip) != tt.want {
 				t.Error("unexpeccted")
 			}
 		})
@@ -28,10 +28,13 @@ func TestParseIp(t *testing.T) {
 }
 
 func isIP(s string) bool {
-	ip := net.ParseIP(s)
-	if ip == nil {
-		_, _, err := net.ParseCIDR(s)
-		return err != nil
+	_, _, err := net.ParseCIDR(s)
+	if err != nil {
+		fmt.Println(s)
+		ip := net.ParseIP(s)
+		if ip == nil {
+			return false
+		}
 	}
 	return true
 }
