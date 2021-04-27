@@ -17,10 +17,11 @@ func TestParseIp(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.ip, func(t *testing.T) {
-			ip := net.ParseIP(tt.ip)
-			if ip == nil && tt.want {
+			ip, ipNet, err := net.ParseCIDR(tt.ip)
+			if err != nil && !tt.want {
 				t.Error("unexpeccted")
 			}
+			t.Log(ip, ipNet)
 		})
 	}
 }
