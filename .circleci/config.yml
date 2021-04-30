@@ -1,52 +1,52 @@
-version: 2.1
+# version: 2.1
 
-commands:
-  restore-cache-dependency:
-    steps:
-      - restore_cache:
-          keys:
-            - v1-golang-playground-{{ checksum "go.sum" }}
-  lint:
-    parameters:
-      GOLANGCI_LINT_VERSION:
-        type: string
-        default: 1.27.0
-    steps:
-      - run:
-          name: lint
-          command: |
-            curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $(go env GOPATH)/bin v<< parameters.GOLANGCI_LINT_VERSION >>
-            make lint
-  test:
-    steps:
-      - run:
-          name: test
-          command: |
-            go mod vendor
-            make ci.test
-            bash <(curl -s https://codecov.io/bash)
-  save-cache-dependency:
-    steps:
-      - save_cache:
-          paths:
-            - "/go/pkg/mod"
-          key: v1-golang-playground-{{ checksum "go.sum" }}
+# commands:
+#   restore-cache-dependency:
+#     steps:
+#       - restore_cache:
+#           keys:
+#             - v1-golang-playground-{{ checksum "go.sum" }}
+#   lint:
+#     parameters:
+#       GOLANGCI_LINT_VERSION:
+#         type: string
+#         default: 1.27.0
+#     steps:
+#       - run:
+#           name: lint
+#           command: |
+#             curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $(go env GOPATH)/bin v<< parameters.GOLANGCI_LINT_VERSION >>
+#             make lint
+#   test:
+#     steps:
+#       - run:
+#           name: test
+#           command: |
+#             go mod vendor
+#             make ci.test
+#             bash <(curl -s https://codecov.io/bash)
+#   save-cache-dependency:
+#     steps:
+#       - save_cache:
+#           paths:
+#             - "/go/pkg/mod"
+#           key: v1-golang-playground-{{ checksum "go.sum" }}
 
-jobs:
-  test:
-    docker:
-      - image: golang:1.14
-    environment:
-      GO111MODULE: "on"
-      GOSUMDB: "off"
-    steps:
-      - checkout
-      - restore-cache-dependency
-      - lint
-      - test
-      - save-cache-dependency
+# jobs:
+#   test:
+#     docker:
+#       - image: golang:1.14
+#     environment:
+#       GO111MODULE: "on"
+#       GOSUMDB: "off"
+#     steps:
+#       - checkout
+#       - restore-cache-dependency
+#       - lint
+#       - test
+#       - save-cache-dependency
 
-workflows:
-    test:
-      # jobs:
-      #   - test
+# workflows:
+#     test:
+#       # jobs:
+#       #   - test
