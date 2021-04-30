@@ -12,7 +12,7 @@ require (
 	github.com/google/go-cmp v0.5.2
 	github.com/google/go-github/v28 v28.1.1
 	github.com/google/wire v0.4.0
-	github.com/gorilla/mux v1.7.4
+	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/graphql-go/graphql v0.7.9
 	github.com/jinzhu/gorm v1.9.16
@@ -24,7 +24,7 @@ require (
 	github.com/shurcooL/githubv4 v0.0.0-20201206200315-234843c633fa
 	github.com/shurcooL/graphql v0.0.0-20200928012149-18c5c3165e3a // indirect
 	github.com/stretchr/testify v1.5.1
-	go.uber.org/goleak v1.0.0
+	go.uber.org/goleak v1.1.10
 	go.uber.org/multierr v1.5.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
