@@ -8,11 +8,18 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/nemotoy/golang-playground/ddd/server/application"
+	"github.com/nemotoy/golang-playground/ddd/server/handler"
 )
 
 func main() {
 	mux := http.NewServeMux()
+	userAppSrv := application.NewUserApplicationService()
+	userHandler := handler.NewUserHandler(userAppSrv)
+
 	mux.HandleFunc("/ping", ping)
+	mux.Handle("/users", userHandler)
 	srv := &http.Server{
 		Addr:    ":8085",
 		Handler: mux,
