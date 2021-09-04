@@ -9,21 +9,23 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gorilla/mux"
+
 	"github.com/nemotoy/golang-playground/ddd/server/application"
 	"github.com/nemotoy/golang-playground/ddd/server/domain/repository"
 	"github.com/nemotoy/golang-playground/ddd/server/presentation"
 )
 
 func main() {
-	mux := http.NewServeMux()
 	userRepo := repository.NewUserRepository()
 	userAppSrv := application.NewUserApplicationService(userRepo)
 	userHandler := presentation.NewUserHandler(userAppSrv)
 
-	mux.Handle("/users", userHandler)
+	r := mux.NewRouter()
+	r.Methods("GET").Path("/users").Handler(userHandler)
 	srv := &http.Server{
 		Addr:    ":8085",
-		Handler: mux,
+		Handler: r,
 	}
 
 	go func() {
