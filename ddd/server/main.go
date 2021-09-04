@@ -10,12 +10,14 @@ import (
 	"time"
 
 	"github.com/nemotoy/golang-playground/ddd/server/application"
+	"github.com/nemotoy/golang-playground/ddd/server/domain/repository"
 	"github.com/nemotoy/golang-playground/ddd/server/handler"
 )
 
 func main() {
 	mux := http.NewServeMux()
-	userAppSrv := application.NewUserApplicationService()
+	userRepo := repository.NewUserRepository()
+	userAppSrv := application.NewUserApplicationService(userRepo)
 	userHandler := handler.NewUserHandler(userAppSrv)
 
 	mux.HandleFunc("/ping", ping)
