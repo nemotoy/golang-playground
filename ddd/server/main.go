@@ -20,7 +20,6 @@ func main() {
 	userAppSrv := application.NewUserApplicationService(userRepo)
 	userHandler := presentation.NewUserHandler(userAppSrv)
 
-	mux.HandleFunc("/ping", ping)
 	mux.Handle("/users", userHandler)
 	srv := &http.Server{
 		Addr:    ":8085",
@@ -42,10 +41,4 @@ func main() {
 		log.Println("failed to shutdown gracefully: ", err)
 	}
 	log.Println("Server shutdown")
-}
-
-func ping(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Received Request: %v\n", r)
-	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte("pong\n"))
 }
