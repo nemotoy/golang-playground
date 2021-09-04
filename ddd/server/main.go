@@ -22,7 +22,9 @@ func main() {
 	userHandler := presentation.NewUserHandler(userAppSrv)
 
 	r := mux.NewRouter()
-	r.Methods("GET").Path("/users").Handler(userHandler)
+	r.Methods("GET").Path("/users").HandlerFunc(userHandler.GetAll)
+	r.Methods("GET").Path("/users/{id:[0-9]+}").HandlerFunc(userHandler.GetByID)
+	r.Methods("POST").Path("/users").HandlerFunc(userHandler.Post)
 	srv := &http.Server{
 		Addr:    ":8085",
 		Handler: r,
