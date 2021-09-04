@@ -11,14 +11,14 @@ import (
 
 	"github.com/nemotoy/golang-playground/ddd/server/application"
 	"github.com/nemotoy/golang-playground/ddd/server/domain/repository"
-	"github.com/nemotoy/golang-playground/ddd/server/handler"
+	"github.com/nemotoy/golang-playground/ddd/server/presentation"
 )
 
 func main() {
 	mux := http.NewServeMux()
 	userRepo := repository.NewUserRepository()
 	userAppSrv := application.NewUserApplicationService(userRepo)
-	userHandler := handler.NewUserHandler(userAppSrv)
+	userHandler := presentation.NewUserHandler(userAppSrv)
 
 	mux.HandleFunc("/ping", ping)
 	mux.Handle("/users", userHandler)
