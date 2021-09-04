@@ -9,6 +9,12 @@ func NewUserRepository() IUserRepository {
 	return &UserRepository{}
 }
 
-func (u *UserRepository) GetAll() []*model.User {
-	return nil
+func (u *UserRepository) GetAll() ([]*model.User, error) {
+	return []*model.User{
+		{LastName: "aaa", FirstName: "aaa"},
+		{LastName: "bbb", FirstName: "bbb"},
+	}, nil
+}
+func (u *UserRepository) Store() (*model.User, error) {
+	return nil, nil
 }

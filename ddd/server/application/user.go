@@ -15,7 +15,11 @@ func NewUserApplicationService(userRepo repository.IUserRepository) *UserApplica
 	return &UserApplicationService{userRepo}
 }
 
-func (u *UserApplicationService) GetAll() []*model.User {
-	users := u.userRepo.GetAll()
-	return users
+func (u *UserApplicationService) GetAll() ([]*model.User, error) {
+	users, _ := u.userRepo.GetAll()
+	return users, nil
+}
+
+func (u *UserApplicationService) Store() (*model.User, error) {
+	return &model.User{}, nil
 }
