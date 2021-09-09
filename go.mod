@@ -23,7 +23,7 @@ require (
 	github.com/rivo/tview v0.0.0-20210217110421-8a8f78a6dd01
 	github.com/shurcooL/githubv4 v0.0.0-20201206200315-234843c633fa
 	github.com/shurcooL/graphql v0.0.0-20200928012149-18c5c3165e3a // indirect
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	go.mongodb.org/mongo-driver v1.5.3 // indirect
 	go.uber.org/goleak v1.1.10
 	go.uber.org/multierr v1.5.0
